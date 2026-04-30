@@ -151,7 +151,7 @@ body {
 .search-box::placeholder { color: var(--text-muted); }
 
 .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { background: var(--secondary); border: 1px solid transparent; border-radius: 9999px; padding: 4px 12px; font-size: 12px; font-weight: 500; color: var(--secondary-fg); cursor: pointer; transition: var(--transition); white-space: nowrap; }
+.chip { background: var(--secondary); border: 1px solid transparent; border-radius: 9999px; padding: 4px 12px; font-size: 12px; font-weight: 500; color: var(--secondary-fg); cursor: pointer; transition: var(--transition); white-space: nowrap; user-select: none; }
 .chip:hover { background: var(--secondary-hover); }
 .chip.active { background: var(--text-main); color: var(--bg); }
 
@@ -763,7 +763,7 @@ const GLOBAL_MAX_THROUGHPUT = Math.max(...produtos.map(p => p.throughput));
 // ============================================================
 // STATE & DEEP LINKING
 // ============================================================
-let filtros = { tipo:'todos', canais:0, ip:false, ia:false, face:false, poe:false, resolucao:'todos', status:'todos', busca:'' };
+let filtros = { tipo: ['todos'], canais: [0], ip: false, ia: false, face: false, poe: false, resolucao: 'todos', status: 'todos', busca: '' };
 let comparacao = [];
 let tabAtual = 'catalogo';
 let configStep = 1;
@@ -778,33 +778,42 @@ function getThemeIcon(isLight) {
 }
 
 function updateURL() {
-  const url = new URL(window.location);
-  url.searchParams.set('tab', tabAtual);
-  if(comparacao.length > 0) url.searchParams.set('cmp', comparacao.map(c=>c.nome).join(','));
-  else url.searchParams.delete('cmp');
-  
-  if(filtros.tipo !== 'todos') url.searchParams.set('tipo', filtros.tipo); else url.searchParams.delete('tipo');
-  if(filtros.canais > 0) url.searchParams.set('ch', filtros.canais); else url.searchParams.delete('ch');
-  if(filtros.resolucao !== 'todos') url.searchParams.set('res', filtros.resolucao); else url.searchParams.delete('res');
-  
-  window.history.replaceState({}, '', url);
+  try {
+    const url = new URL(window.location);
+    url.searchParams.set('tab', tabAtual);
+    if(comparacao.length > 0) url.searchParams.set('cmp', comparacao.map(c=>c.nome).join(','));
+    else url.searchParams.delete('cmp');
+    
+    if(!filtros.tipo.includes('todos')) url.searchParams.set('tipo', filtros.tipo.join(',')); else url.searchParams.delete('tipo');
+    if(!filtros.canais.includes(0)) url.searchParams.set('ch', filtros.canais.join(',')); else url.searchParams.delete('ch');
+    if(filtros.resolucao !== 'todos') url.searchParams.set('res', filtros.resolucao); else url.searchParams.delete('res');
+    
+    window.history.replaceState({}, '', url);
+  } catch (err) {
+    // Ignorar erros de segurança ao rodar em ambientes sandbox/iframe (ex: Canvas)
+    console.warn("Deep linking indisponível neste ambiente devido a restrições de segurança (iframe/blob).");
+  }
 }
 
 function initFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  if(params.get('tab')) tabAtual = params.get('tab');
-  
-  const cmp = params.get('cmp');
-  if(cmp) {
-    cmp.split(',').forEach(nome => {
-      const p = produtos.find(x => x.nome === nome);
-      if(p && comparacao.length < 4) comparacao.push(p);
-    });
-  }
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('tab')) tabAtual = params.get('tab');
+    
+    const cmp = params.get('cmp');
+    if(cmp) {
+      cmp.split(',').forEach(nome => {
+        const p = produtos.find(x => x.nome === nome);
+        if(p && comparacao.length < 4) comparacao.push(p);
+      });
+    }
 
-  if(params.get('tipo')) filtros.tipo = params.get('tipo');
-  if(params.get('ch')) filtros.canais = parseInt(params.get('ch'));
-  if(params.get('res')) filtros.resolucao = params.get('res');
+    if(params.get('tipo')) filtros.tipo = params.get('tipo').split(',');
+    if(params.get('ch')) filtros.canais = params.get('ch').split(',').map(Number);
+    if(params.get('res')) filtros.resolucao = params.get('res');
+  } catch(err) {
+    // Ignora se estiver num ambiente restrito
+  }
 
   atualizarCompareBadge();
   syncUIFiltros();
@@ -812,8 +821,8 @@ function initFromURL() {
 }
 
 function syncUIFiltros() {
-  document.querySelectorAll('#filterTipo .chip').forEach(c => c.classList.toggle('active', c.dataset.value === filtros.tipo));
-  document.querySelectorAll('#filterCanais .chip').forEach(c => c.classList.toggle('active', parseInt(c.dataset.value) === filtros.canais));
+  document.querySelectorAll('#filterTipo .chip').forEach(c => c.classList.toggle('active', filtros.tipo.includes(c.dataset.value)));
+  document.querySelectorAll('#filterCanais .chip').forEach(c => c.classList.toggle('active', filtros.canais.includes(parseInt(c.dataset.value))));
   document.querySelectorAll('#filterResolucao .chip').forEach(c => c.classList.toggle('active', c.dataset.value === filtros.resolucao));
   aplicarFiltros(false);
 }
@@ -947,8 +956,10 @@ function aplicarFiltros(pushState = true) {
 
   let lista = produtos.filter(p => {
     if (filtros.busca && !p.nome.toLowerCase().includes(filtros.busca)) return false;
-    if (filtros.tipo !== 'todos' && p.tipo !== filtros.tipo) return false;
-    if (filtros.canais > 0 && p.canais !== filtros.canais) return false;
+    
+    if (filtros.tipo.length > 0 && !filtros.tipo.includes('todos') && !filtros.tipo.includes(p.tipo)) return false;
+    if (filtros.canais.length > 0 && !filtros.canais.includes(0) && !filtros.canais.includes(p.canais)) return false;
+    
     if (filtros.ip && p.canaisIPAdicionais <= 0 && p.tipo !== 'NVR' && p.tipo !== 'iNVD') return false;
     if (filtros.ia && !p.inteligenciaArtificial) return false;
     if (filtros.face && !p.reconhecimentoFacial) return false;
@@ -982,12 +993,38 @@ function aplicarFiltros(pushState = true) {
 function toggleChip(el, tipo) {
   const group = el.parentElement;
   const value = el.dataset.value;
-  group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  if (tipo === 'tipo') filtros.tipo = value;
-  else if (tipo === 'canais') filtros.canais = parseInt(value) || 0;
-  else if (tipo === 'resolucao') filtros.resolucao = value;
-  else if (tipo === 'status') filtros.status = value;
+  
+  if (tipo === 'tipo' || tipo === 'canais') {
+    const isTodos = value === 'todos' || value === '0';
+    const todosChip = group.querySelector('.chip[data-value="todos"], .chip[data-value="0"]');
+
+    if (isTodos) {
+      group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+    } else {
+      el.classList.toggle('active');
+      if (todosChip) todosChip.classList.remove('active');
+      
+      if (group.querySelectorAll('.chip.active').length === 0) {
+        if (todosChip) todosChip.classList.add('active');
+      }
+    }
+
+    const activeValues = Array.from(group.querySelectorAll('.chip.active')).map(c => c.dataset.value);
+    if (tipo === 'tipo') {
+      filtros.tipo = activeValues;
+    } else if (tipo === 'canais') {
+      filtros.canais = activeValues.map(v => parseInt(v));
+    }
+
+  } else {
+    // Single select fallbacks for other chip categories
+    group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    if (tipo === 'resolucao') filtros.resolucao = value;
+    else if (tipo === 'status') filtros.status = value;
+  }
+  
   aplicarFiltros();
 }
 
@@ -1001,7 +1038,7 @@ function toggleFilter(tipo) {
 }
 
 function limparFiltros() {
-  filtros = { tipo:'todos', canais:0, ip:false, ia:false, face:false, poe:false, resolucao:'todos', status:'todos', busca:'' };
+  filtros = { tipo: ['todos'], canais: [0], ip: false, ia: false, face: false, poe: false, resolucao: 'todos', status: 'todos', busca: '' };
   document.getElementById('searchInput').value = '';
   document.getElementById('sortSelect').value = 'nome';
   ['toggleIP','toggleIA','toggleFace','togglePoE'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove('on'); });
