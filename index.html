@@ -28,21 +28,21 @@
   --accent: #27272a; 
   --accent-fg: #fafafa;
 
-  /* Semantic / Flat Badges */
-  --badge-nvr: #1e3a8a; /* blue-900 */
-  --badge-nvr-fg: #bfdbfe; /* blue-200 */
-  --badge-imhdx: #14532d; /* green-900 */
-  --badge-imhdx-fg: #bbf7d0; /* green-200 */
+  /* Semantic / Flat Badges (Monochromatic & Green Only) */
+  --badge-nvr: var(--secondary);
+  --badge-nvr-fg: var(--secondary-fg);
+  --badge-imhdx: rgba(22, 163, 74, 0.15);
+  --badge-imhdx-fg: var(--primary);
 
-  --status-active: #064e3b; /* emerald-900 */
-  --status-active-fg: #6ee7b7; /* emerald-300 */
-  --status-discontinued: #7f1d1d; /* red-900 */
-  --status-discontinued-fg: #fca5a5; /* red-300 */
-  --status-phasein: #78350f; /* amber-900 */
-  --status-phasein-fg: #fcd34d; /* amber-300 */
+  --status-active: rgba(22, 163, 74, 0.15);
+  --status-active-fg: var(--primary);
+  --status-discontinued: transparent;
+  --status-discontinued-fg: var(--text-muted);
+  --status-phasein: var(--secondary);
+  --status-phasein-fg: var(--text-main);
 
-  --highlight-melhor: rgba(22, 163, 74, 0.1);
-  --highlight-diff: rgba(250, 204, 21, 0.08);
+  --highlight-melhor: rgba(22, 163, 74, 0.08);
+  --highlight-diff: rgba(255, 255, 255, 0.03);
 
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --radius: 0.5rem;
@@ -70,20 +70,21 @@
   --accent: #f4f4f5;
   --accent-fg: #18181b;
 
-  --badge-nvr: #eff6ff; /* blue-50 */
-  --badge-nvr-fg: #1d4ed8; /* blue-700 */
-  --badge-imhdx: #f0fdf4; /* green-50 */
-  --badge-imhdx-fg: #15803d; /* green-700 */
+  /* Semantic / Flat Badges (Monochromatic & Green Only) */
+  --badge-nvr: var(--secondary);
+  --badge-nvr-fg: var(--secondary-fg);
+  --badge-imhdx: rgba(22, 163, 74, 0.1);
+  --badge-imhdx-fg: var(--primary-hover);
 
-  --status-active: #ecfdf5; /* emerald-50 */
-  --status-active-fg: #047857; /* emerald-700 */
-  --status-discontinued: #fef2f2; /* red-50 */
-  --status-discontinued-fg: #b91c1c; /* red-700 */
-  --status-phasein: #fffbeb; /* amber-50 */
-  --status-phasein-fg: #b45309; /* amber-700 */
+  --status-active: rgba(22, 163, 74, 0.1);
+  --status-active-fg: var(--primary-hover);
+  --status-discontinued: transparent;
+  --status-discontinued-fg: var(--text-muted);
+  --status-phasein: var(--secondary);
+  --status-phasein-fg: var(--text-main);
 
   --highlight-melhor: rgba(22, 163, 74, 0.05);
-  --highlight-diff: rgba(250, 204, 21, 0.05);
+  --highlight-diff: rgba(0, 0, 0, 0.02);
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -193,12 +194,12 @@ body {
 .badge-type { background: var(--secondary); color: var(--secondary-fg); }
 .badge-nvr { background: var(--badge-nvr); color: var(--badge-nvr-fg); }
 .badge-imhdx { background: var(--badge-imhdx); color: var(--badge-imhdx-fg); }
-.badge-perf { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); } /* Yellow */
-.badge-new { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); } /* Blue */
+.badge-perf { background: var(--highlight-melhor); color: var(--primary); } 
+.badge-new { background: var(--secondary); color: var(--text-main); } 
 
-.status-badge { position: absolute; top: 12px; right: 12px; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.02em; }
+.status-badge { position: absolute; top: 12px; right: 12px; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.02em; border: 1px solid transparent; }
 .status-badge.active { background: var(--status-active); color: var(--status-active-fg); }
-.status-badge.discontinued { background: var(--status-discontinued); color: var(--status-discontinued-fg); }
+.status-badge.discontinued { background: var(--status-discontinued); color: var(--status-discontinued-fg); border-color: var(--border); }
 .status-badge.phase-in { background: var(--status-phasein); color: var(--status-phasein-fg); }
 
 .card-body { padding: 12px 20px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; }
@@ -257,7 +258,7 @@ body {
 .compare-col-header { min-width: 220px; }
 .col-model-name { font-size: 15px; font-weight: 600; color: var(--text-main); }
 .btn-remove-compare { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 4px; border-radius: 4px; transition: var(--transition); }
-.btn-remove-compare:hover { color: var(--status-discontinued-fg); background: var(--status-discontinued); }
+.btn-remove-compare:hover { color: var(--text-main); background: var(--secondary); }
 .cell-yes { color: var(--text-main); font-weight: 500; }
 .cell-no { color: var(--text-muted); }
 .cell-highlight { font-weight: 600; }
@@ -348,7 +349,6 @@ body {
   .main { grid-template-columns: 1fr; }
   .comparator-table th, .comparator-table td { border-color: #ddd; color: black; font-size: 11px; padding: 8px; }
   .comparator-table .row-label { background: white; color: black; font-weight: bold; }
-  .highlight-row td { background: #f0fdf4 !important; border: 1px solid #16a34a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 
@@ -1322,9 +1322,9 @@ function calcularArmazenamento(capMaxTB, tpMax) {
   const out = document.getElementById('calcResultArea');
   let warn = '';
   
-  if (terabytes > capMaxTB) warn += `<div style="color:var(--status-discontinued-fg); margin-top:12px; font-weight:500; display:flex; gap:6px; align-items:start;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>O HD necessário (${terabytes.toFixed(1)} TB) excede o suportado pelo aparelho (${capMaxTB} TB). Considere reduzir dias ou qualidade.</span></div>`;
+  if (terabytes > capMaxTB) warn += `<div style="color:var(--text-main); margin-top:12px; font-weight:500; display:flex; gap:6px; align-items:start;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>O HD necessário (${terabytes.toFixed(1)} TB) excede o suportado pelo aparelho (${capMaxTB} TB). Considere reduzir dias ou qualidade.</span></div>`;
   
-  if (bandaH265 > tpMax && tpMax > 0) warn += `<div style="color:var(--status-discontinued-fg); margin-top:8px; font-weight:500; display:flex; gap:6px; align-items:start;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>O tráfego de rede (${bandaH265} Mbps) excede o limite do aparelho (${tpMax} Mbps).</span></div>`;
+  if (bandaH265 > tpMax && tpMax > 0) warn += `<div style="color:var(--text-main); margin-top:8px; font-weight:500; display:flex; gap:6px; align-items:start;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>O tráfego de rede (${bandaH265} Mbps) excede o limite do aparelho (${tpMax} Mbps).</span></div>`;
 
   out.innerHTML = `
     <div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom: 1px dotted var(--border); padding-bottom:8px;">
