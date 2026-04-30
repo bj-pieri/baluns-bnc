@@ -5,58 +5,104 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Intelbras — Configurador de Gravadores</title>
 <style>
+/* =========================================
+   DESIGN SYSTEM (Shadcn UI Inspired)
+   ========================================= */
 :root {
-  --verde: #006B3C;
-  --verde-claro: #00C854;
-  --verde-escuro: #004D2B;
-  --verde-fundo: #0A2E1E;
-  --verde-card: #0D3B26;
-  --branco: #FFFFFF;
-  --cinza-claro: #F0F4F2;
-  --cinza-medio: #C8D5CF;
-  --cinza-texto: #8BA99A;
-  --texto: #1A2E24;
-  --texto-secundario: #4A6B5A;
-  --borda: #1E4A32;
-  --azul-ip: #2196F3;
-  --azul-ip-claro: #E3F2FD;
-  --dourado: #FFB300;
-  --vermelho: #E53935;
-  --highlight-melhor: rgba(0,200,84,0.15);
-  --highlight-diff: rgba(255,179,0,0.12);
-  --shadow: 0 4px 24px rgba(0,0,0,0.18);
-  --shadow-card: 0 2px 12px rgba(0,0,0,0.12);
-  --radius: 12px;
-  --radius-sm: 8px;
-  --transition: all 0.22s cubic-bezier(.4,0,.2,1);
+  /* DARK THEME (Default) */
+  --bg: #09090b; /* zinc-950 */
+  --surface: #09090b; /* zinc-950 */
+  --border: #27272a; /* zinc-800 */
+  
+  --text-main: #fafafa; /* zinc-50 */
+  --text-muted: #a1a1aa; /* zinc-400 */
+  
+  --primary: #16a34a; /* green-600 */
+  --primary-hover: #15803d; /* green-700 */
+  --primary-fg: #ffffff;
+  
+  --secondary: #27272a; /* zinc-800 */
+  --secondary-hover: #3f3f46; /* zinc-700 */
+  --secondary-fg: #fafafa;
+  
+  --accent: #27272a; 
+  --accent-fg: #fafafa;
+
+  /* Semantic / Flat Badges */
+  --badge-nvr: #1e3a8a; /* blue-900 */
+  --badge-nvr-fg: #bfdbfe; /* blue-200 */
+  --badge-imhdx: #14532d; /* green-900 */
+  --badge-imhdx-fg: #bbf7d0; /* green-200 */
+
+  --status-active: #064e3b; /* emerald-900 */
+  --status-active-fg: #6ee7b7; /* emerald-300 */
+  --status-discontinued: #7f1d1d; /* red-900 */
+  --status-discontinued-fg: #fca5a5; /* red-300 */
+  --status-phasein: #78350f; /* amber-900 */
+  --status-phasein-fg: #fcd34d; /* amber-300 */
+
+  --highlight-melhor: rgba(22, 163, 74, 0.1);
+  --highlight-diff: rgba(250, 204, 21, 0.08);
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --radius: 0.5rem;
+  --radius-sm: 0.375rem;
+  --transition: all 0.15s ease-in-out;
 }
 
 [data-theme="light"] {
-  --verde-fundo: #F0F4F2;
-  --verde-card: #FFFFFF;
-  --borda: #D0E0D8;
-  --texto: #1A2E24;
-  --texto-secundario: #4A6B5A;
-  --cinza-claro: #E8F0EC;
-  --shadow: 0 4px 24px rgba(0,0,0,0.10);
-  --shadow-card: 0 2px 12px rgba(0,0,0,0.08);
+  /* LIGHT THEME */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --border: #e4e4e7; /* zinc-200 */
+  
+  --text-main: #09090b; /* zinc-950 */
+  --text-muted: #71717a; /* zinc-500 */
+  
+  --primary: #16a34a; 
+  --primary-hover: #15803d; 
+  --primary-fg: #ffffff;
+  
+  --secondary: #f4f4f5; /* zinc-100 */
+  --secondary-hover: #e4e4e7; /* zinc-200 */
+  --secondary-fg: #18181b; /* zinc-900 */
+  
+  --accent: #f4f4f5;
+  --accent-fg: #18181b;
+
+  --badge-nvr: #eff6ff; /* blue-50 */
+  --badge-nvr-fg: #1d4ed8; /* blue-700 */
+  --badge-imhdx: #f0fdf4; /* green-50 */
+  --badge-imhdx-fg: #15803d; /* green-700 */
+
+  --status-active: #ecfdf5; /* emerald-50 */
+  --status-active-fg: #047857; /* emerald-700 */
+  --status-discontinued: #fef2f2; /* red-50 */
+  --status-discontinued-fg: #b91c1c; /* red-700 */
+  --status-phasein: #fffbeb; /* amber-50 */
+  --status-phasein-fg: #b45309; /* amber-700 */
+
+  --highlight-melhor: rgba(22, 163, 74, 0.05);
+  --highlight-diff: rgba(250, 204, 21, 0.05);
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
-  font-family: 'Segoe UI', 'SF Pro Display', system-ui, -apple-system, sans-serif;
-  background: var(--verde-fundo);
-  color: var(--branco);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
   min-height: 100vh;
   font-size: 14px;
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* HEADER */
 .header {
-  background: var(--verde-escuro);
-  border-bottom: 1px solid var(--borda);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
   padding: 0 24px;
   display: flex;
   align-items: center;
@@ -65,43 +111,32 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: var(--shadow);
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+.logo { display: flex; align-items: center; gap: 8px; }
 
 .logo-text {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: var(--branco);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-main);
 }
 
 .logo-badge {
-  background: var(--verde-claro);
-  color: var(--verde-escuro);
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  background: var(--secondary);
+  color: var(--secondary-fg);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.header-actions { display: flex; align-items: center; gap: 8px; }
 
 .btn-icon {
-  background: none;
-  border: 1px solid var(--borda);
-  color: var(--branco);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-main);
   width: 36px;
   height: 36px;
   border-radius: var(--radius-sm);
@@ -112,67 +147,66 @@ body {
   font-size: 16px;
   transition: var(--transition);
 }
-.btn-icon:hover { background: var(--borda); }
+.btn-icon:hover { background: var(--secondary); }
 
 .compare-badge {
-  background: var(--verde-claro);
-  color: var(--verde-escuro);
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 700;
+  background: var(--secondary);
+  color: var(--secondary-fg);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  border: none;
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: 6px;
   transition: var(--transition);
 }
-.compare-badge:hover { background: #00E060; transform: scale(1.03); }
+.compare-badge:hover { background: var(--secondary-hover); }
 .compare-badge .count {
-  background: var(--verde-escuro);
-  color: var(--verde-claro);
-  border-radius: 50%;
-  width: 18px;
+  background: var(--primary);
+  color: var(--primary-fg);
+  border-radius: 9999px;
+  padding: 0 6px;
   height: 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
+  font-weight: 600;
 }
 
 /* TABS NAV */
 .tabs-nav {
   display: flex;
-  gap: 4px;
-  padding: 16px 24px 0;
-  border-bottom: 1px solid var(--borda);
-  background: var(--verde-escuro);
+  gap: 16px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
 }
 
 .tab-btn {
-  background: none;
+  background: transparent;
   border: none;
-  color: var(--cinza-texto);
-  padding: 10px 18px;
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  color: var(--text-muted);
+  padding: 14px 4px;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   transition: var(--transition);
   border-bottom: 2px solid transparent;
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
+  margin-bottom: -1px;
 }
-.tab-btn:hover { color: var(--branco); }
+.tab-btn:hover { color: var(--text-main); }
 .tab-btn.active {
-  color: var(--verde-claro);
-  border-bottom-color: var(--verde-claro);
-  background: rgba(0,200,84,0.08);
+  color: var(--text-main);
+  border-bottom-color: var(--primary);
 }
-
-.tab-icon { font-size: 15px; }
+.tab-icon { font-size: 14px; opacity: 0.7; }
 
 /* MAIN LAYOUT */
 .main {
@@ -184,9 +218,9 @@ body {
 
 /* SIDEBAR FILTERS */
 .sidebar {
-  background: var(--verde-card);
-  border-right: 1px solid var(--borda);
-  padding: 20px;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  padding: 24px;
   overflow-y: auto;
   position: sticky;
   top: 109px;
@@ -194,65 +228,56 @@ body {
 }
 
 .sidebar-title {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--cinza-texto);
-  margin-bottom: 16px;
-}
-
-.filter-group {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
   margin-bottom: 20px;
 }
 
+.filter-group { margin-bottom: 24px; }
+
 .filter-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--cinza-medio);
-  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .search-box {
-  background: var(--verde-fundo);
-  border: 1px solid var(--borda);
+  background: transparent;
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 9px 12px;
-  color: var(--branco);
+  padding: 8px 12px;
+  color: var(--text-main);
   font-size: 13px;
   width: 100%;
   outline: none;
   transition: var(--transition);
 }
-.search-box:focus { border-color: var(--verde-claro); }
-.search-box::placeholder { color: var(--cinza-texto); }
+.search-box:focus { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+.search-box::placeholder { color: var(--text-muted); }
 
-.chip-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .chip {
-  background: var(--verde-fundo);
-  border: 1px solid var(--borda);
-  border-radius: 20px;
-  padding: 5px 11px;
+  background: var(--secondary);
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  padding: 4px 12px;
   font-size: 12px;
-  color: var(--cinza-medio);
+  font-weight: 500;
+  color: var(--secondary-fg);
   cursor: pointer;
   transition: var(--transition);
   white-space: nowrap;
 }
-.chip:hover { border-color: var(--verde-claro); color: var(--verde-claro); }
+.chip:hover { background: var(--secondary-hover); }
 .chip.active {
-  background: var(--verde-claro);
-  color: var(--verde-escuro);
-  border-color: var(--verde-claro);
-  font-weight: 700;
+  background: var(--text-main);
+  color: var(--bg);
 }
 
 .toggle-row {
@@ -260,301 +285,295 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid var(--borda);
 }
-.toggle-row:last-child { border-bottom: none; }
 
-.toggle-label {
-  font-size: 12px;
-  color: var(--cinza-medio);
-}
+.toggle-label { font-size: 13px; color: var(--text-muted); }
 
 .toggle {
   width: 36px;
   height: 20px;
-  background: var(--borda);
-  border-radius: 10px;
+  background: var(--secondary);
+  border-radius: 9999px;
   cursor: pointer;
   position: relative;
   transition: var(--transition);
-  border: none;
+  border: 2px solid transparent;
   outline: none;
 }
-.toggle.on { background: var(--verde-claro); }
+.toggle.on { background: var(--primary); }
 .toggle::after {
   content: '';
   position: absolute;
-  width: 14px;
-  height: 14px;
-  background: white;
+  width: 16px;
+  height: 16px;
+  background: #fff;
   border-radius: 50%;
-  top: 3px;
-  left: 3px;
+  top: 0;
+  left: 0;
   transition: var(--transition);
+  box-shadow: var(--shadow-sm);
 }
-.toggle.on::after { left: 19px; }
+.toggle.on::after { left: 16px; }
 
 .results-count {
-  font-size: 11px;
-  color: var(--cinza-texto);
-  margin-bottom: 12px;
-  padding: 8px 12px;
-  background: var(--verde-fundo);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  padding: 12px;
+  background: var(--secondary);
   border-radius: var(--radius-sm);
   text-align: center;
+  border: 1px solid var(--border);
 }
-.results-count strong { color: var(--verde-claro); }
+.results-count strong { color: var(--text-main); font-weight: 600; }
 
 .btn-clear {
-  background: none;
-  border: 1px solid var(--borda);
-  color: var(--cinza-texto);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
   border-radius: var(--radius-sm);
-  padding: 7px 12px;
-  font-size: 11px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
   width: 100%;
   transition: var(--transition);
-  margin-top: 4px;
 }
-.btn-clear:hover { color: var(--vermelho); border-color: var(--vermelho); }
+.btn-clear:hover { background: var(--secondary); color: var(--text-main); }
 
 /* CONTENT AREA */
-.content {
-  padding: 20px;
-  overflow-y: auto;
-}
+.content { padding: 24px; overflow-y: auto; }
 
 /* ORDERING BAR */
 .sort-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
 }
 
-.sort-label { font-size: 12px; color: var(--cinza-texto); }
+.sort-label { font-size: 13px; color: var(--text-muted); }
 
 .sort-select {
-  background: var(--verde-card);
-  border: 1px solid var(--borda);
-  color: var(--branco);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-main);
   border-radius: var(--radius-sm);
-  padding: 6px 10px;
-  font-size: 12px;
+  padding: 6px 12px;
+  font-size: 13px;
   outline: none;
   cursor: pointer;
 }
+.sort-select:focus { border-color: var(--primary); }
 
 /* PRODUCT GRID */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .product-card {
-  background: var(--verde-card);
-  border: 1px solid var(--borda);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0;
   overflow: hidden;
   transition: var(--transition);
   cursor: pointer;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
-.product-card:hover {
-  border-color: var(--verde-claro);
-  box-shadow: 0 0 0 1px var(--verde-claro), var(--shadow-card);
-  transform: translateY(-2px);
-}
+.product-card:hover { border-color: var(--text-muted); }
 .product-card.in-compare {
-  border-color: var(--verde-claro);
-  box-shadow: 0 0 0 2px var(--verde-claro);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
 }
-.product-card.discontinued { opacity: 0.65; }
+.product-card.discontinued { opacity: 0.6; }
 
 .card-header {
-  background: var(--verde-fundo);
-  padding: 16px 16px 12px;
+  padding: 20px 20px 12px;
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 16px;
 }
 
 .card-img-wrap {
-  width: 64px;
-  height: 48px;
-  background: rgba(255,255,255,0.05);
+  width: 60px;
+  height: 44px;
+  background: var(--secondary);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--border);
 }
 
-.device-icon {
-  width: 56px;
-  height: 36px;
-}
+.device-icon { width: 44px; height: 28px; }
 
 .card-title-area { flex: 1; min-width: 0; }
 
 .card-model {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--branco);
-  letter-spacing: -0.3px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 .card-tipo {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 4px;
-  background: rgba(255,255,255,0.08);
+  margin-top: 6px;
   border-radius: 4px;
-  padding: 2px 7px;
+  padding: 2px 6px;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--cinza-medio);
+  letter-spacing: 0.05em;
+  background: var(--secondary);
+  color: var(--secondary-fg);
 }
-.card-tipo.nvr { background: rgba(33,150,243,0.15); color: #90CAF9; }
-.card-tipo.imhdx { background: rgba(0,200,84,0.15); color: var(--verde-claro); }
+.card-tipo.nvr { background: var(--badge-nvr); color: var(--badge-nvr-fg); }
+.card-tipo.imhdx { background: var(--badge-imhdx); color: var(--badge-imhdx-fg); }
 
 .status-badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 3px;
+  top: 12px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.02em;
 }
-.status-badge.active { background: rgba(0,200,84,0.2); color: var(--verde-claro); }
-.status-badge.discontinued { background: rgba(229,57,53,0.2); color: #EF9A9A; }
-.status-badge.phase-in { background: rgba(255,179,0,0.2); color: var(--dourado); }
+.status-badge.active { background: var(--status-active); color: var(--status-active-fg); }
+.status-badge.discontinued { background: var(--status-discontinued); color: var(--status-discontinued-fg); }
+.status-badge.phase-in { background: var(--status-phasein); color: var(--status-phasein-fg); }
 
 .card-body {
-  padding: 12px 16px;
+  padding: 12px 20px 20px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 12px;
+  flex: 1;
 }
 
-.card-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
+.card-stat { display: flex; flex-direction: column; gap: 4px; }
 .card-stat-label {
-  font-size: 10px;
-  color: var(--cinza-texto);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 .card-stat-value {
   font-size: 13px;
-  font-weight: 700;
-  color: var(--branco);
+  font-weight: 500;
+  color: var(--text-main);
 }
 
-/* IP expansion highlight */
+.highlight-stat {
+  grid-column: 1 / -1;
+  background: var(--highlight-melhor);
+  border-left: 3px solid var(--primary);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 4px;
+}
+.highlight-stat .card-stat-label {
+  color: var(--primary);
+  font-weight: 600;
+}
+.highlight-stat .card-stat-value {
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .card-ip-expansion {
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, rgba(33,150,243,0.15), rgba(0,200,84,0.1));
-  border: 1px solid rgba(33,150,243,0.3);
+  background: var(--secondary);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 8px 10px;
+  padding: 10px 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 .card-ip-expansion .ip-label {
-  font-size: 10px;
-  color: #90CAF9;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 .card-ip-expansion .ip-value {
   font-size: 13px;
-  font-weight: 800;
-  color: #64B5F6;
+  font-weight: 600;
+  color: var(--text-main);
 }
-.ip-icon { font-size: 16px; }
 
 .ai-badge {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  background: linear-gradient(135deg, #1A237E, #3949AB);
-  color: #90CAF9;
+  background: var(--secondary);
+  color: var(--text-main);
   border-radius: 4px;
-  padding: 2px 7px;
-  font-size: 10px;
-  font-weight: 700;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 500;
 }
-.ai-badge.full { background: linear-gradient(135deg, #004D40, #00897B); color: #A7FFEB; }
+.ai-badge.full { background: var(--text-main); color: var(--bg); }
 
 .card-footer {
-  padding: 10px 16px;
-  border-top: 1px solid var(--borda);
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  background: transparent;
 }
 
 .btn-primary, .btn-secondary {
   flex: 1;
-  padding: 8px 0;
+  padding: 8px 16px;
   border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
-  border: none;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
 }
 
 .btn-primary {
-  background: var(--verde-claro);
-  color: var(--verde-escuro);
+  background: var(--primary);
+  color: var(--primary-fg);
+  border: 1px solid transparent;
 }
-.btn-primary:hover { background: #00E060; }
-.btn-primary:disabled {
-  background: var(--borda);
-  color: var(--cinza-texto);
-  cursor: not-allowed;
-}
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-secondary {
-  background: none;
-  border: 1px solid var(--borda);
-  color: var(--cinza-medio);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-main);
 }
-.btn-secondary:hover { border-color: var(--verde-claro); color: var(--verde-claro); }
+.btn-secondary:hover { background: var(--secondary); }
 .btn-secondary.added {
-  background: rgba(0,200,84,0.15);
-  border-color: var(--verde-claro);
-  color: var(--verde-claro);
+  background: var(--secondary);
+  border-color: var(--border);
 }
 
 /* COMPARATOR PANEL */
-.comparator-panel {
-  display: none;
-  background: var(--verde-card);
-}
+.comparator-panel { display: none; background: var(--bg); }
 .comparator-panel.active { display: block; }
 
 .comparator-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--borda);
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -562,29 +581,27 @@ body {
 
 .comparator-title {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  letter-spacing: -0.02em;
 }
 
 .btn-export {
-  background: var(--verde-claro);
-  color: var(--verde-escuro);
-  border: none;
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
 }
-.btn-export:hover { background: #00E060; }
+.btn-export:hover { background: var(--secondary); }
 
-.comparator-table-wrap {
-  overflow-x: auto;
-  padding: 20px 24px;
-}
+.comparator-table-wrap { overflow-x: auto; padding: 24px; }
 
 .comparator-table {
   width: 100%;
@@ -593,250 +610,216 @@ body {
 }
 
 .comparator-table th, .comparator-table td {
-  padding: 11px 14px;
+  padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid var(--borda);
+  border-bottom: 1px solid var(--border);
   vertical-align: top;
   font-size: 13px;
 }
 
 .comparator-table th {
-  background: var(--verde-fundo);
-  font-weight: 800;
+  background: var(--bg);
+  font-weight: 600;
   position: sticky;
   top: 0;
+  border-bottom: 2px solid var(--border);
 }
 
 .comparator-table .row-label {
-  color: var(--cinza-texto);
-  font-size: 12px;
-  font-weight: 600;
-  width: 180px;
-  background: var(--verde-fundo);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  width: 200px;
+  background: var(--bg);
   position: sticky;
   left: 0;
   z-index: 2;
 }
 
-.comparator-table tr:hover td { background: rgba(255,255,255,0.02); }
+.comparator-table tr:hover td { background: var(--secondary); }
 
-.comparator-table .diff-row td:not(.row-label) {
-  background: var(--highlight-diff);
-}
+.comparator-table .diff-row td:not(.row-label) { background: var(--highlight-diff); }
+.comparator-table .best-row td:not(.row-label) { background: var(--highlight-melhor); }
 
-.comparator-table .best-row td:not(.row-label) {
-  background: var(--highlight-melhor);
-}
+.comparator-table .highlight-row td { background: var(--highlight-melhor); border-top: 1px solid var(--primary); border-bottom: 1px solid var(--primary); }
+.comparator-table .highlight-row .row-label { color: var(--primary); font-weight: 600; border-top: 1px solid var(--primary); border-bottom: 1px solid var(--primary); }
+.comparator-table .highlight-row td:not(.row-label) { color: var(--primary); font-weight: 600; }
 
-.compare-col-header {
-  min-width: 200px;
-}
+.compare-col-header { min-width: 220px; }
 
 .col-model-name {
   font-size: 15px;
-  font-weight: 800;
-  color: var(--branco);
+  font-weight: 600;
+  color: var(--text-main);
 }
 
 .btn-remove-compare {
-  background: none;
+  background: transparent;
   border: none;
-  color: var(--cinza-texto);
+  color: var(--text-muted);
   cursor: pointer;
-  font-size: 16px;
-  padding: 2px;
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 4px;
   transition: var(--transition);
-  float: right;
 }
-.btn-remove-compare:hover { color: var(--vermelho); }
+.btn-remove-compare:hover { color: var(--status-discontinued-fg); background: var(--status-discontinued); }
 
-.cell-yes { color: var(--verde-claro); font-weight: 700; }
-.cell-no { color: var(--cinza-texto); }
-.cell-highlight { color: var(--verde-claro); font-weight: 800; }
-.cell-ip { color: #64B5F6; font-weight: 800; }
-.cell-best::after {
-  content: ' ★';
-  color: var(--dourado);
-}
+.cell-yes { color: var(--text-main); font-weight: 500; }
+.cell-no { color: var(--text-muted); }
+.cell-highlight { font-weight: 600; }
+.cell-ip { font-weight: 600; }
+.cell-best::after { content: ' ★'; color: var(--text-muted); font-size: 11px;}
 
 /* CONFIGURATOR */
 .configurator-wrap {
   display: none;
   max-width: 680px;
-  margin: 40px auto;
-  padding: 0 20px;
+  margin: 48px auto;
+  padding: 0 24px;
 }
 .configurator-wrap.active { display: block; }
 
 .config-step {
   display: none;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.2s ease;
 }
 .config-step.active { display: block; }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .config-progress {
   display: flex;
-  gap: 6px;
-  margin-bottom: 32px;
+  gap: 8px;
+  margin-bottom: 40px;
 }
 .config-dot {
   flex: 1;
-  height: 3px;
-  border-radius: 3px;
-  background: var(--borda);
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
   transition: var(--transition);
 }
-.config-dot.done { background: var(--verde-claro); }
+.config-dot.done { background: var(--text-main); }
 
 .config-question {
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 600;
   margin-bottom: 8px;
-  line-height: 1.3;
+  letter-spacing: -0.02em;
 }
 
 .config-subtitle {
   font-size: 14px;
-  color: var(--cinza-texto);
-  margin-bottom: 28px;
+  color: var(--text-muted);
+  margin-bottom: 32px;
 }
 
 .config-options {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
 .config-option {
-  background: var(--verde-card);
-  border: 2px solid var(--borda);
+  background: transparent;
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 20px 16px;
   text-align: center;
   cursor: pointer;
   transition: var(--transition);
 }
-.config-option:hover { border-color: var(--verde-claro); background: rgba(0,200,84,0.05); }
+.config-option:hover { background: var(--secondary); }
 .config-option.selected {
-  border-color: var(--verde-claro);
-  background: rgba(0,200,84,0.12);
+  border-color: var(--text-main);
+  background: var(--secondary);
 }
 
-.config-option-icon { font-size: 28px; margin-bottom: 8px; }
-.config-option-label { font-size: 13px; font-weight: 700; }
-.config-option-sub { font-size: 11px; color: var(--cinza-texto); margin-top: 3px; }
+.config-option-icon { font-size: 24px; margin-bottom: 12px; opacity: 0.8; }
+.config-option-label { font-size: 14px; font-weight: 500; color: var(--text-main); }
+.config-option-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-.config-nav {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.btn-back {
-  background: none;
-  border: 1px solid var(--borda);
-  color: var(--cinza-medio);
-  border-radius: var(--radius-sm);
-  padding: 10px 20px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-}
-.btn-back:hover { border-color: var(--verde-claro); color: var(--verde-claro); }
+.config-nav { display: flex; gap: 12px; justify-content: flex-end; }
 
 .btn-next {
-  background: var(--verde-claro);
-  color: var(--verde-escuro);
+  background: var(--text-main);
+  color: var(--bg);
   border: none;
   border-radius: var(--radius-sm);
   padding: 10px 24px;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
 }
-.btn-next:hover { background: #00E060; }
-.btn-next:disabled { background: var(--borda); color: var(--cinza-texto); cursor: not-allowed; }
+.btn-next:hover { opacity: 0.9; }
+.btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* RESULTS PAGE */
-.results-section {
-  display: none;
-  animation: fadeIn 0.3s ease;
-}
+.results-section { display: none; animation: fadeIn 0.2s ease; }
 .results-section.active { display: block; }
 
-.result-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
+.result-header { text-align: center; margin-bottom: 40px; }
 
-.result-emoji { font-size: 48px; margin-bottom: 12px; }
-.result-title { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
-.result-desc { font-size: 14px; color: var(--cinza-texto); }
+.result-emoji { font-size: 40px; margin-bottom: 16px; }
+.result-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.02em; }
+.result-desc { font-size: 14px; color: var(--text-muted); }
 
 .results-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .result-card {
-  background: var(--verde-card);
-  border: 1px solid var(--borda);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
   transition: var(--transition);
 }
-.result-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 
-.result-card.best {
-  border-color: var(--verde-claro);
-  box-shadow: 0 0 0 1px var(--verde-claro);
-}
-
-.result-card.cost {
-  border-color: var(--dourado);
-  box-shadow: 0 0 0 1px var(--dourado);
-}
+.result-card.best { border-color: var(--text-main); }
+.result-card.cost { border-color: var(--text-muted); }
 
 .result-ribbon {
   padding: 6px 16px;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.05em;
   text-align: center;
+  background: var(--secondary);
+  color: var(--secondary-fg);
+  border-bottom: 1px solid var(--border);
 }
-.result-ribbon.best { background: var(--verde-claro); color: var(--verde-escuro); }
-.result-ribbon.cost { background: var(--dourado); color: #1A1A00; }
-.result-ribbon.alt { background: var(--borda); color: var(--cinza-medio); }
+.result-ribbon.best { background: var(--text-main); color: var(--bg); }
 
 .reason-box {
-  margin: 10px 14px;
-  background: rgba(0,200,84,0.06);
-  border-left: 3px solid var(--verde-claro);
-  padding: 8px 10px;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  font-size: 11px;
-  color: var(--cinza-medio);
+  margin: 0 20px 12px;
+  background: var(--secondary);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
 /* EMPTY STATE */
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
-  color: var(--cinza-texto);
+  padding: 64px 20px;
+  color: var(--text-muted);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
 }
-.empty-icon { font-size: 48px; margin-bottom: 12px; }
-.empty-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--cinza-medio); }
+.empty-icon { font-size: 32px; margin-bottom: 16px; opacity: 0.5; }
+.empty-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; color: var(--text-main); }
 .empty-desc { font-size: 13px; }
 
 /* MODAL */
@@ -844,7 +827,8 @@ body {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
   z-index: 200;
   align-items: center;
   justify-content: center;
@@ -853,73 +837,72 @@ body {
 .modal-overlay.active { display: flex; }
 
 .modal {
-  background: var(--verde-card);
-  border: 1px solid var(--borda);
+  background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  max-width: 680px;
+  max-width: 600px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: var(--shadow);
-  animation: fadeIn 0.22s ease;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  animation: fadeIn 0.15s ease;
 }
 
 .modal-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--borda);
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
 }
 
-.modal-title { font-size: 20px; font-weight: 800; }
-.modal-tipo { font-size: 12px; color: var(--cinza-texto); margin-top: 2px; }
+.modal-title { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+.modal-tipo { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
 .btn-close {
-  background: none;
+  background: transparent;
   border: none;
-  color: var(--cinza-texto);
-  font-size: 22px;
+  color: var(--text-muted);
+  font-size: 20px;
   cursor: pointer;
-  padding: 2px 6px;
+  padding: 4px;
   line-height: 1;
+  border-radius: 4px;
   transition: var(--transition);
 }
-.btn-close:hover { color: var(--vermelho); }
+.btn-close:hover { background: var(--secondary); color: var(--text-main); }
 
-.modal-body { padding: 20px 24px; }
+.modal-body { padding: 24px; }
 
 .spec-table { width: 100%; border-collapse: collapse; }
-.spec-table tr { border-bottom: 1px solid var(--borda); }
+.spec-table tr { border-bottom: 1px solid var(--border); }
 .spec-table tr:last-child { border-bottom: none; }
 .spec-table td {
-  padding: 9px 4px;
+  padding: 12px 4px;
   font-size: 13px;
 }
 .spec-table td:first-child {
-  color: var(--cinza-texto);
-  width: 55%;
-  font-weight: 500;
+  color: var(--text-muted);
+  width: 50%;
 }
-.spec-table td:last-child { font-weight: 700; color: var(--branco); }
+.spec-table td:last-child { font-weight: 500; color: var(--text-main); }
 
 /* TOOLTIP */
-[data-tip] { position: relative; cursor: help; }
+[data-tip] { position: relative; cursor: help; border-bottom: 1px dotted var(--text-muted); }
 [data-tip]:hover::after {
   content: attr(data-tip);
   position: absolute;
-  bottom: calc(100% + 6px);
+  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: #1A1A2E;
-  color: white;
-  padding: 5px 9px;
-  border-radius: 5px;
-  font-size: 11px;
+  background: var(--text-main);
+  color: var(--bg);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
   white-space: nowrap;
   z-index: 99;
   pointer-events: none;
-  box-shadow: var(--shadow);
 }
 
 /* PRINT */
@@ -932,18 +915,13 @@ body {
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .main { grid-template-columns: 1fr; }
-  .sidebar {
-    position: static;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--borda);
-  }
+  .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
   .comparator-table { min-width: 600px; }
 }
 @media (max-width: 600px) {
   .products-grid { grid-template-columns: 1fr; }
   .config-options { grid-template-columns: 1fr 1fr; }
-  .tabs-nav { overflow-x: auto; }
+  .tabs-nav { overflow-x: auto; padding: 0 16px; }
   .tab-btn { white-space: nowrap; }
 }
 </style>
@@ -956,22 +934,22 @@ body {
     <div class="logo-badge">Gravadores</div>
   </div>
   <div class="header-actions">
-    <button class="btn-icon" id="toggleTheme" title="Alternar tema" onclick="toggleTheme()">🌙</button>
+    <button class="btn-icon" id="toggleTheme" title="Alternar tema" onclick="toggleTheme()">☀️</button>
     <button class="compare-badge" id="compareBadge" onclick="showTab('comparar')" style="display:none">
-      ⚖️ Comparar <span class="count" id="compareCount">0</span>
+      Comparar <span class="count" id="compareCount">0</span>
     </button>
   </div>
 </header>
 
 <nav class="tabs-nav">
   <button class="tab-btn active" data-tab="catalogo" onclick="showTab('catalogo')">
-    <span class="tab-icon">📋</span> Catálogo
+    Catálogo
   </button>
   <button class="tab-btn" data-tab="descobrir" onclick="showTab('descobrir')">
-    <span class="tab-icon">🧭</span> Descobrir
+    Descobrir
   </button>
   <button class="tab-btn" data-tab="comparar" onclick="showTab('comparar')">
-    <span class="tab-icon">⚖️</span> Comparar
+    Comparador
   </button>
 </nav>
 
@@ -981,15 +959,15 @@ body {
     <div class="sidebar-title">Filtros</div>
 
     <div class="filter-group">
-      <div class="filter-label">🔍 Busca</div>
+      <div class="filter-label">Busca</div>
       <input type="text" class="search-box" id="searchInput" placeholder="Nome do modelo..." oninput="aplicarFiltros()">
     </div>
 
     <div class="filter-group">
-      <div class="filter-label">📡 Tipo</div>
+      <div class="filter-label">Tipo</div>
       <div class="chip-group" id="filterTipo">
         <div class="chip active" data-value="todos" onclick="toggleChip(this,'tipo')">Todos</div>
-        <div class="chip" data-value="DVR" onclick="toggleChip(this,'tipo')">DVR</div>
+        <div class="chip" data-value="MHDX" onclick="toggleChip(this,'tipo')">MHDX</div>
         <div class="chip" data-value="NVR" onclick="toggleChip(this,'tipo')">NVR</div>
         <div class="chip" data-value="iMHDX" onclick="toggleChip(this,'tipo')">iMHDX</div>
         <div class="chip" data-value="iNVD" onclick="toggleChip(this,'tipo')">iNVD</div>
@@ -997,46 +975,46 @@ body {
     </div>
 
     <div class="filter-group">
-      <div class="filter-label">📹 Canais Analógicos</div>
+      <div class="filter-label">Canais Analógicos</div>
       <div class="chip-group" id="filterCanais">
         <div class="chip active" data-value="0" onclick="toggleChip(this,'canais')">Todos</div>
-        <div class="chip" data-value="4" onclick="toggleChip(this,'canais')">4ch</div>
-        <div class="chip" data-value="8" onclick="toggleChip(this,'canais')">8ch</div>
-        <div class="chip" data-value="16" onclick="toggleChip(this,'canais')">16ch</div>
-        <div class="chip" data-value="32" onclick="toggleChip(this,'canais')">32ch</div>
+        <div class="chip" data-value="4" onclick="toggleChip(this,'canais')">4 canais</div>
+        <div class="chip" data-value="8" onclick="toggleChip(this,'canais')">8 canais</div>
+        <div class="chip" data-value="16" onclick="toggleChip(this,'canais')">16 canais</div>
+        <div class="chip" data-value="32" onclick="toggleChip(this,'canais')">32 canais</div>
       </div>
     </div>
 
     <div class="filter-group">
-      <div class="filter-label">🌐 Expansão IP</div>
+      <div class="filter-label">Expansão IP</div>
       <div class="toggle-row">
-        <span class="toggle-label" data-tip="Canais IP extras além dos analógicos">Com expansão IP extra</span>
+        <span class="toggle-label" data-tip="Canais extras além dos analógicos">Com expansão IP</span>
         <button class="toggle" id="toggleIP" onclick="toggleFilter('ip')"></button>
       </div>
     </div>
 
     <div class="filter-group">
-      <div class="filter-label">🤖 Inteligência Artificial</div>
+      <div class="filter-label">Inteligência Artificial</div>
       <div class="toggle-row">
-        <span class="toggle-label">Com IA</span>
+        <span class="toggle-label">Com IA Básica</span>
         <button class="toggle" id="toggleIA" onclick="toggleFilter('ia')"></button>
       </div>
       <div class="toggle-row">
-        <span class="toggle-label">Reconhecimento facial</span>
+        <span class="toggle-label">Reconhecimento Facial</span>
         <button class="toggle" id="toggleFace" onclick="toggleFilter('face')"></button>
       </div>
     </div>
 
     <div class="filter-group">
-      <div class="filter-label">📡 Portas PoE</div>
+      <div class="filter-label">Portas PoE</div>
       <div class="toggle-row">
-        <span class="toggle-label">Com PoE</span>
+        <span class="toggle-label">Com PoE integrado</span>
         <button class="toggle" id="togglePoE" onclick="toggleFilter('poe')"></button>
       </div>
     </div>
 
     <div class="filter-group">
-      <div class="filter-label">💾 Resolução Máxima</div>
+      <div class="filter-label">Resolução Máxima</div>
       <div class="chip-group" id="filterResolucao">
         <div class="chip active" data-value="todos" onclick="toggleChip(this,'resolucao')">Todos</div>
         <div class="chip" data-value="1080p" onclick="toggleChip(this,'resolucao')">1080p</div>
@@ -1047,7 +1025,7 @@ body {
     </div>
 
     <div class="filter-group">
-      <div class="filter-label">📊 Status</div>
+      <div class="filter-label">Status</div>
       <div class="chip-group" id="filterStatus">
         <div class="chip active" data-value="todos" onclick="toggleChip(this,'status')">Todos</div>
         <div class="chip" data-value="Em linha" onclick="toggleChip(this,'status')">Em linha</div>
@@ -1056,7 +1034,7 @@ body {
     </div>
 
     <div id="resultsCount" class="results-count"><strong>0</strong> modelos encontrados</div>
-    <button class="btn-clear" onclick="limparFiltros()">✕ Limpar filtros</button>
+    <button class="btn-clear" onclick="limparFiltros()">Limpar filtros</button>
   </aside>
 
   <div class="content" id="catalogoContent">
@@ -1080,7 +1058,7 @@ body {
   <!-- Step 1 -->
   <div class="config-step active" data-step="1">
     <div class="config-question">Quantas câmeras você precisa?</div>
-    <div class="config-subtitle">Selecione a faixa mais próxima da sua necessidade</div>
+    <div class="config-subtitle">Selecione a faixa mais próxima da sua necessidade.</div>
     <div class="config-options">
       <div class="config-option" data-key="cameras" data-value="4" onclick="selectOption(this)">
         <div class="config-option-icon">📹</div>
@@ -1104,14 +1082,14 @@ body {
       </div>
     </div>
     <div class="config-nav">
-      <button class="btn-next" onclick="nextStep()" disabled id="nextBtn1">Próximo →</button>
+      <button class="btn-next" onclick="nextStep()" disabled id="nextBtn1">Próximo</button>
     </div>
   </div>
 
   <!-- Step 2 -->
   <div class="config-step" data-step="2">
     <div class="config-question">Usará câmeras IP?</div>
-    <div class="config-subtitle">Câmeras IP oferecem maior resolução e flexibilidade na instalação</div>
+    <div class="config-subtitle">Câmeras IP oferecem maior resolução e flexibilidade na rede.</div>
     <div class="config-options">
       <div class="config-option" data-key="usaIP" data-value="nao" onclick="selectOption(this)">
         <div class="config-option-icon">📡</div>
@@ -1121,7 +1099,7 @@ body {
       <div class="config-option" data-key="usaIP" data-value="algumas" onclick="selectOption(this)">
         <div class="config-option-icon">🔀</div>
         <div class="config-option-label">Algumas</div>
-        <div class="config-option-sub">Híbrido</div>
+        <div class="config-option-sub">Sistema Híbrido</div>
       </div>
       <div class="config-option" data-key="usaIP" data-value="todas" onclick="selectOption(this)">
         <div class="config-option-icon">🌐</div>
@@ -1130,15 +1108,15 @@ body {
       </div>
     </div>
     <div class="config-nav">
-      <button class="btn-back" onclick="prevStep()">← Voltar</button>
-      <button class="btn-next" onclick="nextStep()" disabled id="nextBtn2">Próximo →</button>
+      <button class="btn-secondary" onclick="prevStep()">Voltar</button>
+      <button class="btn-next" onclick="nextStep()" disabled id="nextBtn2">Próximo</button>
     </div>
   </div>
 
   <!-- Step 3 -->
   <div class="config-step" data-step="3">
     <div class="config-question">Precisa de Inteligência Artificial?</div>
-    <div class="config-subtitle">IA permite detecção de pessoas, veículos, reconhecimento facial e mais</div>
+    <div class="config-subtitle">IA permite detecção inteligente e buscas ágeis no sistema.</div>
     <div class="config-options">
       <div class="config-option" data-key="ia" data-value="nao" onclick="selectOption(this)">
         <div class="config-option-icon">🎯</div>
@@ -1148,7 +1126,7 @@ body {
       <div class="config-option" data-key="ia" data-value="basica" onclick="selectOption(this)">
         <div class="config-option-icon">🤖</div>
         <div class="config-option-label">IA Básica</div>
-        <div class="config-option-sub">Pessoas/Veículos</div>
+        <div class="config-option-sub">Pessoas / Veículos</div>
       </div>
       <div class="config-option" data-key="ia" data-value="avancada" onclick="selectOption(this)">
         <div class="config-option-icon">🧠</div>
@@ -1157,15 +1135,15 @@ body {
       </div>
     </div>
     <div class="config-nav">
-      <button class="btn-back" onclick="prevStep()">← Voltar</button>
-      <button class="btn-next" onclick="nextStep()" disabled id="nextBtn3">Próximo →</button>
+      <button class="btn-secondary" onclick="prevStep()">Voltar</button>
+      <button class="btn-next" onclick="nextStep()" disabled id="nextBtn3">Próximo</button>
     </div>
   </div>
 
   <!-- Step 4 -->
   <div class="config-step" data-step="4">
     <div class="config-question">Qual nível de resolução?</div>
-    <div class="config-subtitle">Maior resolução = mais detalhes, mas requer mais espaço em disco</div>
+    <div class="config-subtitle">Maior resolução exige mais espaço em disco.</div>
     <div class="config-options">
       <div class="config-option" data-key="resolucao" data-value="hd" onclick="selectOption(this)">
         <div class="config-option-icon">📺</div>
@@ -1184,8 +1162,8 @@ body {
       </div>
     </div>
     <div class="config-nav">
-      <button class="btn-back" onclick="prevStep()">← Voltar</button>
-      <button class="btn-next" onclick="calcularRecomendacao()" disabled id="nextBtn4">Ver Recomendações →</button>
+      <button class="btn-secondary" onclick="prevStep()">Voltar</button>
+      <button class="btn-next" onclick="calcularRecomendacao()" disabled id="nextBtn4">Ver Recomendações</button>
     </div>
   </div>
 
@@ -1193,13 +1171,13 @@ body {
   <div class="results-section" id="configResults">
     <div class="result-header">
       <div class="result-emoji">🎯</div>
-      <div class="result-title">Recomendações para você</div>
+      <div class="result-title">Recomendações</div>
       <div class="result-desc" id="resultDesc"></div>
     </div>
     <div class="results-cards" id="resultCards"></div>
-    <div style="text-align:center;margin-top:24px">
-      <button class="btn-back" onclick="reiniciarConfigurador()">↺ Recomeçar</button>
-      <button class="btn-next" style="margin-left:10px" onclick="showTab('catalogo')">Ver Catálogo Completo</button>
+    <div style="text-align:center;margin-top:32px;display:flex;gap:12px;justify-content:center">
+      <button class="btn-secondary" onclick="reiniciarConfigurador()">Recomeçar</button>
+      <button class="btn-primary" onclick="showTab('catalogo')">Ver Catálogo</button>
     </div>
   </div>
 </div>
@@ -1208,12 +1186,12 @@ body {
 <div id="tab-comparar" class="comparator-panel" style="display:none">
   <div class="comparator-header">
     <div class="comparator-title">
-      ⚖️ Comparador
-      <span id="compareSubtitle" style="font-size:13px;font-weight:400;color:var(--cinza-texto)">Selecione até 4 modelos no catálogo</span>
+      Comparador
+      <span id="compareSubtitle" style="font-size:13px;font-weight:400;color:var(--text-muted)">Selecione até 4 modelos no catálogo</span>
     </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn-export" onclick="exportarComparacao()">🖨️ Imprimir / PDF</button>
-      <button class="btn-back" onclick="limparComparacao()">✕ Limpar</button>
+    <div style="display:flex;gap:12px">
+      <button class="btn-export" onclick="exportarComparacao()">Imprimir</button>
+      <button class="btn-secondary" onclick="limparComparacao()">Limpar</button>
     </div>
   </div>
   <div class="comparator-table-wrap">
@@ -1228,61 +1206,129 @@ body {
 
 <script>
 // ============================================================
-// DADOS DOS PRODUTOS
+// DADOS DOS PRODUTOS (EXTRAÍDOS DO JSON DO USUÁRIO)
 // ============================================================
-const produtos = [
-  // ── DVR 04 CANAIS ──────────────────────────────────────
-  { nome:'MHDX 1104-C', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:4, canaisIPAdicionais:1, canaisIPTotal:5, modoNVR:5, resolucaoMax:'2MP (1080p)', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:20, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI e IP' },
-  { nome:'MHDX 1304', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:4, canaisIPAdicionais:1, canaisIPTotal:5, modoNVR:5, resolucaoMax:'2MP (1080p)', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:32, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'MHDX 3104-C', tipo:'DVR', linhaFamilia:'MHDX 3xxx', canais:4, canaisIPAdicionais:1, canaisIPTotal:5, modoNVR:5, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:32, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'MHDX 1004-C', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:4, canaisIPAdicionais:1, canaisIPTotal:5, modoNVR:5, resolucaoMax:'2MP (1080p)', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:20, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI e IP' },
-  { nome:'MHDX 3004-C', tipo:'DVR', linhaFamilia:'MHDX 3xxx', canais:4, canaisIPAdicionais:2, canaisIPTotal:6, modoNVR:6, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:32, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+const jsonCompleto = {
+  "gravadores": [
+    { "modelo": "MHDX 1004-C", "tipo": "DVR", "canais_fisicos": 4, "status": "Descontinuado c/ substituto", "tecnologias_protocolos": "HDCVI, AHD, HDTVI e IP", "resolucao_maxima_suportada": "Até 2MP (1080p)", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "Entrada: 20 Mbps / Saída: 20 Mbps", "ia_deteccao_pessoas_veiculos": "4 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 1104-C", "tipo": "DVR", "canais_fisicos": 4, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI e IP", "resolucao_maxima_suportada": "Até 2MP (1080p)", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Sim", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "Entrada: 20 Mbps / Saída: 20 Mbps", "ia_deteccao_pessoas_veiculos": "4 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 1204", "tipo": "DVR", "canais_fisicos": 4, "status": "Descontinuado c/ substituto", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 2MP (1080p)", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "32 Mbps", "ia_deteccao_pessoas_veiculos": "4 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 1304", "tipo": "DVR", "canais_fisicos": 4, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 2MP (1080p)", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Sim", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "32 Mbps", "ia_deteccao_pessoas_veiculos": "4 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 3004-C", "tipo": "DVR", "canais_fisicos": 4, "status": "Descontinuado c/ substituto", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Sim", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "32 Mbps", "ia_deteccao_pessoas_veiculos": "4 canais", "ia_linha_cerca_virtual": "1 Canal", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: 4 Canais" },
+    { "modelo": "MHDX 3104-C", "tipo": "DVR", "canais_fisicos": 4, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Sim", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "32 Mbps", "ia_deteccao_pessoas_veiculos": "4 canais", "ia_linha_cerca_virtual": "1 canal", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: 4 Canais" },
+    { "modelo": "MHDX 1008-C", "tipo": "DVR", "canais_fisicos": 8, "status": "Descontínuado c/ substituto", "tecnologias_protocolos": "HDCVI, AHD, HDTVI E IP", "resolucao_maxima_suportada": "Até 2MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "Entrada: 40Mbps Saída: 40 Mbps", "ia_deteccao_pessoas_veiculos": "4 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 1108-C", "tipo": "DVR", "canais_fisicos": 8, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI E IP", "resolucao_maxima_suportada": "Até 2MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Sim", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "Entrada: 40Mbps Saída: 40 Mbps", "ia_deteccao_pessoas_veiculos": "8 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 1208", "tipo": "DVR", "canais_fisicos": 8, "status": "Descontinuado c/ substituto", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 2MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "48 Mbps", "ia_deteccao_pessoas_veiculos": "8 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 1308", "tipo": "DVR", "canais_fisicos": 8, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 2MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Sim", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "32 Mbps", "ia_deteccao_pessoas_veiculos": "8 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 3008-C", "tipo": "DVR", "canais_fisicos": 8, "status": "Descontinuado com substituto", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "48 Mbps", "ia_deteccao_pessoas_veiculos": "8 canais", "ia_linha_cerca_virtual": "2 canais", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Sim" },
+    { "modelo": "MHDX 3108-C", "tipo": "DVR", "canais_fisicos": 8, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógica (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Sim", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100/1000 Mbps)", "rede_throughput": "64 Mbps", "ia_deteccao_pessoas_veiculos": "8 canais", "ia_linha_cerca_virtual": "4 canais", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Sim" },
+    { "modelo": "iMHDX 3008", "tipo": "DVR", "canais_fisicos": 8, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100/1000 Mbps)", "rede_throughput": "Entrada: 64Mbps Saída: 64 Mbps", "ia_deteccao_pessoas_veiculos": "8 canais", "ia_linha_cerca_virtual": "1 canal", "ia_reconhecimento_facial": "1 canal", "ia_outras": "POS: Sim" },
+    { "modelo": "iMHDX 3108", "tipo": "DVR", "canais_fisicos": 8, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100/1000 Mbps)", "rede_throughput": "128 Mbps", "ia_deteccao_pessoas_veiculos": "Gravador: 8 canais; Câmera: 8 canais", "ia_linha_cerca_virtual": "Gravador: 4 canais; Câmera: 8 canais", "ia_reconhecimento_facial": "2 canais", "ia_outras": "POS: 8 canais" },
+    { "modelo": "iMHDX 5108", "tipo": "DVR", "canais_fisicos": 8, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 4K", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 18, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100/1000 Mbps)", "rede_throughput": "128 Mbps", "ia_deteccao_pessoas_veiculos": "8 canais", "ia_linha_cerca_virtual": "Até 4 canais / Câmera: 4 canais", "ia_reconhecimento_facial": "2 canais", "ia_outras": "POS: Sim" },
+    { "modelo": "MHDX 1016-C", "tipo": "DVR", "canais_fisicos": 16, "status": "Descontinuado c/ substituto", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 1080p ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "Entrada: 64Mbps Saída: 64 Mbps", "ia_deteccao_pessoas_veiculos": "8 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 1116-C", "tipo": "DVR", "canais_fisicos": 16, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógica (CVBS) e IP", "resolucao_maxima_suportada": "Até 1080p ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "Entrada: 64Mbps Saída: 64 Mbps", "ia_deteccao_pessoas_veiculos": "16 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 1216", "tipo": "DVR", "canais_fisicos": 16, "status": "Descontínuado c/ substituto", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 2MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "64 Mbps", "ia_deteccao_pessoas_veiculos": "8 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 1316", "tipo": "DVR", "canais_fisicos": 16, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 2MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "64 Mbps", "ia_deteccao_pessoas_veiculos": "16 canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "MHDX 3116-C", "tipo": "DVR", "canais_fisicos": 16, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 22, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100/1000 Mbps)", "rede_throughput": "128 Mbps", "ia_deteccao_pessoas_veiculos": "16 canais", "ia_linha_cerca_virtual": "Gravador: 4 canais Câmera: 4 canais", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: 16 canais" },
+    { "modelo": "iMHDX 3116", "tipo": "DVR", "canais_fisicos": 16, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 6MP para câmeras IP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 24, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100/1000 Mbps)", "rede_throughput": "128 Mbps", "ia_deteccao_pessoas_veiculos": "16 canais", "ia_linha_cerca_virtual": "Gravador: 4 canais Câmera: 8 canais", "ia_reconhecimento_facial": "2 canais", "ia_outras": "POS: 16 canais" },
+    { "modelo": "iMHDX 5116", "tipo": "DVR", "canais_fisicos": 16, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 4K", "armazenamento_hds": 2, "capacidade_max_por_hd_tb": 18, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100/1000 Mbps)", "rede_throughput": "128 Mbps", "ia_deteccao_pessoas_veiculos": "16 canais", "ia_linha_cerca_virtual": "Gravador: até 8 canais / Câmera: 4 canais", "ia_reconhecimento_facial": "2 canais", "ia_outras": "POS: 16 canais" },
+    { "modelo": "iMHDX 7016", "tipo": "DVR", "canais_fisicos": 16, "status": "Descontinuado s/ substituto", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 4K para câmeras IP", "armazenamento_hds": 4, "capacidade_max_por_hd_tb": 22, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "2 portas RJ45 (10/100/1000 Mbps)", "rede_throughput": "128 Mbps", "ia_deteccao_pessoas_veiculos": "16 canais", "ia_linha_cerca_virtual": "Gravador: 4 canais Câmera: 8 canais", "ia_reconhecimento_facial": "2 canais", "ia_outras": "POS: 16 canais" },
+    { "modelo": "MHDX 1232", "tipo": "DVR", "canais_fisicos": 32, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 2MP ou 6MP para câmeras IP", "armazenamento_hds": 2, "capacidade_max_por_hd_tb": 22, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100/1000 Mbps)", "rede_throughput": "128 Mbps", "ia_deteccao_pessoas_veiculos": "16 Canais", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "POS: Não" },
+    { "modelo": "iMHDX 3132", "tipo": "DVR", "canais_fisicos": 32, "status": "Em linha", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 6MP para câmeras IP", "armazenamento_hds": 2, "capacidade_max_por_hd_tb": 24, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100/1000 Mbps)", "rede_throughput": "128 Mbps", "ia_deteccao_pessoas_veiculos": "16 Canais", "ia_linha_cerca_virtual": "Gravador: 4 canais / câmera: 8 canais", "ia_reconhecimento_facial": "2 Canais", "ia_outras": "POS: 16 Canais" },
+    { "modelo": "iMHDX 7032", "tipo": "DVR", "canais_fisicos": 32, "status": "Descontinuado s/ substituto", "tecnologias_protocolos": "HDCVI, AHD, HDTVI, Analógico (CVBS) e IP", "resolucao_maxima_suportada": "Até 5MP ou 4k para câmeras IP", "armazenamento_hds": 4, "capacidade_max_por_hd_tb": 24, "compativel_ssd": "Não", "suporte_poe": null, "rede_portas_ethernet": "1 porta RJ45 (10/100/1000 Mbps)", "rede_throughput": "128 Mbps", "ia_deteccao_pessoas_veiculos": "16 Canais", "ia_linha_cerca_virtual": "Gravador: 4 canais / câmera: 8 canais", "ia_reconhecimento_facial": "2 Canais", "ia_outras": "POS: 16 Canais" },
+    { "modelo": "NVD 1404", "tipo": "NVR", "canais_fisicos": 4, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S", "resolucao_maxima_suportada": "Até 8MP (4K)", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": null, "suporte_poe": "Não", "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "88 Mbps", "ia_deteccao_pessoas_veiculos": "Não", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "Contagem de pessoas: Não, Leitura de placas: Não" },
+    { "modelo": "NVD 1404-P", "tipo": "NVR", "canais_fisicos": 4, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S", "resolucao_maxima_suportada": "Até 8MP (4K)", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": null, "suporte_poe": "4 portas (36 W total)", "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "88 Mbps", "ia_deteccao_pessoas_veiculos": "Não", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "Contagem de pessoas: Não, Leitura de placas: Não" },
+    { "modelo": "NVD 1408", "tipo": "NVR", "canais_fisicos": 8, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S", "resolucao_maxima_suportada": "Até 8MP (4K)", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": null, "suporte_poe": "Não", "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "88 Mbps", "ia_deteccao_pessoas_veiculos": "Não", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "Contagem de pessoas: Não, Leitura de placas: Não" },
+    { "modelo": "NVD 1408-P", "tipo": "NVR", "canais_fisicos": 8, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S", "resolucao_maxima_suportada": "Até 8MP (4K)", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": null, "suporte_poe": "8 portas (72 W total)", "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "88 Mbps", "ia_deteccao_pessoas_veiculos": "Não", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "Contagem de pessoas: Não, Leitura de placas: Não" },
+    { "modelo": "NVD 3308-P", "tipo": "NVR", "canais_fisicos": 8, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S", "resolucao_maxima_suportada": "Até 8MP (4K)", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 22, "compativel_ssd": null, "suporte_poe": "8 portas (72 W total)", "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "140 Mbps", "ia_deteccao_pessoas_veiculos": "Câmera: 8 canais", "ia_linha_cerca_virtual": "Câmera: 8 canais", "ia_reconhecimento_facial": "Câmera: 4 canais", "ia_outras": "Contagem de pessoas: Sim, Leitura de placas: Câmera: 8 canais" },
+    { "modelo": "NVD 1416", "tipo": "NVR", "canais_fisicos": 16, "status": "Descontinuado do c/ substituto", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S", "resolucao_maxima_suportada": "Até 12 MP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": null, "suporte_poe": "Não", "rede_portas_ethernet": "1 porta RJ45 (10/100Mbps)", "rede_throughput": "Entrada: 88 Mbps / Saída: 60 Mbps", "ia_deteccao_pessoas_veiculos": "Não", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "Contagem de pessoas: Não, Leitura de placas: Não" },
+    { "modelo": "NVD 1516", "tipo": "NVR", "canais_fisicos": 16, "status": "Phase In", "tecnologias_protocolos": "Intelbras -1 e Onvif Perfil S, T e G", "resolucao_maxima_suportada": "Até 12 MP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 22, "compativel_ssd": null, "suporte_poe": "Não", "rede_portas_ethernet": "1 porta RJ45 (10/100/1000Mbps)", "rede_throughput": "Entrada: 144 Mbps / Saída: 72 Mbps", "ia_deteccao_pessoas_veiculos": "Gravador: 4 canais / Câmera: 16 canais", "ia_linha_cerca_virtual": "Câmera: 16 canais", "ia_reconhecimento_facial": "Não", "ia_outras": "Contagem de pessoas: Não, Leitura de placas: Não" },
+    { "modelo": "iNVD 1016", "tipo": "NVR", "canais_fisicos": 16, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S", "resolucao_maxima_suportada": "Até 12 MP", "armazenamento_hds": 1, "capacidade_max_por_hd_tb": 14, "compativel_ssd": null, "suporte_poe": "Não", "rede_portas_ethernet": "1 porta RJ45 (10/100/1000Mbps)", "rede_throughput": "Entrada: 144 Mbps / Saída: 72 Mbps", "ia_deteccao_pessoas_veiculos": "Gravador: 4 canais / Câmera: 4 canais", "ia_linha_cerca_virtual": "Gravador: 1 canal / Câmera: 4 canais", "ia_reconhecimento_facial": "Gravador: 1 canal / Câmera: 4 canais", "ia_outras": "Contagem de pessoas: Não, Leitura de placas: Não" },
+    { "modelo": "NVD 3316 PLUS", "tipo": "NVR", "canais_fisicos": 16, "status": "Descontínuado c/ substituto", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S", "resolucao_maxima_suportada": "Até 8MP (4K)", "armazenamento_hds": 2, "capacidade_max_por_hd_tb": 22, "compativel_ssd": null, "suporte_poe": "Não", "rede_portas_ethernet": "1 porta RJ45 (10/100/1000Mbps)", "rede_throughput": "Entrada: 160 Mbps / Saída: 60 Mbps", "ia_deteccao_pessoas_veiculos": "Câmera: 12 canais", "ia_linha_cerca_virtual": "Câmera: 8 canais", "ia_reconhecimento_facial": "Câmera: 4 canais", "ia_outras": "Contagem de pessoas: Câmera: 4 canais, Leitura de placas: Câmera: 8 canais" },
+    { "modelo": "iNVD 3016-P", "tipo": "NVR", "canais_fisicos": 16, "status": "Phase In", "tecnologias_protocolos": "Intelbras -1 e Onvif Perfil S, T e G", "resolucao_maxima_suportada": "Até 16 MP", "armazenamento_hds": 2, "capacidade_max_por_hd_tb": 24, "compativel_ssd": null, "suporte_poe": "16 portas (130W total)", "rede_portas_ethernet": "1 porta RJ45 (10/100/1000Mbps)", "rede_throughput": "Entrada: 256 Mbps / Saída: 256 Mbps", "ia_deteccao_pessoas_veiculos": "Gravador: 4 canais / Câmera: 16 canais", "ia_linha_cerca_virtual": "Gravador: 4 canais / Câmera: 16 canais", "ia_reconhecimento_facial": "Gravador: 1 canal / Câmera: 8 canais", "ia_outras": "Contagem de pessoas: Câmera: 10 canais, Leitura de placas: Câmera: 10 canais" },
+    { "modelo": "NVD 3316-P", "tipo": "NVR", "canais_fisicos": 16, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S", "resolucao_maxima_suportada": "Até 8MP (4K)", "armazenamento_hds": 2, "capacidade_max_por_hd_tb": 22, "compativel_ssd": null, "suporte_poe": "16 portas (117W total)", "rede_portas_ethernet": "1 porta RJ45 (10/100/1000Mbps)", "rede_throughput": "Entrada: 160 Mbps / Saída: 60 Mbps", "ia_deteccao_pessoas_veiculos": "Câmera: 12 canais", "ia_linha_cerca_virtual": "Câmera: 8 canais", "ia_reconhecimento_facial": "Câmera: 4 canais", "ia_outras": "Contagem de pessoas: Câmera: 4 canais, Leitura de placas: Câmera: 8 canais" },
+    { "modelo": "iNVD 3016", "tipo": "NVR", "canais_fisicos": 16, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S, T e G", "resolucao_maxima_suportada": "Até 16 MP", "armazenamento_hds": 2, "capacidade_max_por_hd_tb": 24, "compativel_ssd": null, "suporte_poe": "Não", "rede_portas_ethernet": "1 porta RJ45 (10/100/1000Mbps)", "rede_throughput": "Entrada: 165 Mbps / Saída: 165 Mbps", "ia_deteccao_pessoas_veiculos": "Gravador: 4 canais / Câmera: 16 canais", "ia_linha_cerca_virtual": "Gravador: 4 canais / Câmera: 16 canais", "ia_reconhecimento_facial": "Gravador: 1 canal / Câmera: 8 canais", "ia_outras": "Contagem de pessoas: Câmera: 10 canais, Leitura de placas: Câmera: 10 canais" },
+    { "modelo": "NVD 1432", "tipo": "NVR", "canais_fisicos": 32, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S", "resolucao_maxima_suportada": "Até 8MP (4K)", "armazenamento_hds": 2, "capacidade_max_por_hd_tb": 22, "compativel_ssd": null, "suporte_poe": "Não", "rede_portas_ethernet": "1 porta RJ45 (10/100M/1000bps)", "rede_throughput": "Entrada: 120 Mbps / Saída: 40 Mbps", "ia_deteccao_pessoas_veiculos": "Não", "ia_linha_cerca_virtual": "Não", "ia_reconhecimento_facial": "Não", "ia_outras": "Contagem de pessoas: Não, Leitura de placas: Não" },
+    { "modelo": "iNVD 3032", "tipo": "NVR", "canais_fisicos": 32, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S, T e G", "resolucao_maxima_suportada": "Até 16 MP", "armazenamento_hds": 2, "capacidade_max_por_hd_tb": 24, "compativel_ssd": null, "suporte_poe": "Não", "rede_portas_ethernet": "1 porta RJ45 (10/100M/1000bps)", "rede_throughput": "Entrada: 256 Mbps e Saída: 256Mbps", "ia_deteccao_pessoas_veiculos": "Gravador: 4 canais / Câmera: 32 canais", "ia_linha_cerca_virtual": "Gravador: 4 canais / Câmera: 32 canais", "ia_reconhecimento_facial": "Gravador: 1 canal / Câmera: 8 canais", "ia_outras": "Contagem de pessoas: Câmera: 10 canais, Leitura de placas: Câmera: 10 canais" },
+    { "modelo": "iNVD 5232", "tipo": "NVR", "canais_fisicos": 32, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S, T e G", "resolucao_maxima_suportada": "Até 16 MP", "armazenamento_hds": 8, "capacidade_max_por_hd_tb": 24, "compativel_ssd": null, "suporte_poe": "Não", "rede_portas_ethernet": "2 portas RJ45 (10/100/1000Mbps)", "rede_throughput": "Entrada: 165 Mbps / Saída: 165 Mbps", "ia_deteccao_pessoas_veiculos": "Gravador: 4 canais / Câmera: 32 canais", "ia_linha_cerca_virtual": "Gravador: 4 canais / Câmera: 32 canais", "ia_reconhecimento_facial": "Gravador: 1 canal / Câmera: 8 canais", "ia_outras": "Contagem de pessoas: Câmera: 10 canais, Leitura de placas: Câmera: 10 canais" },
+    { "modelo": "iNVD 5232-16P", "tipo": "NVR", "canais_fisicos": 32, "status": "Em linha", "tecnologias_protocolos": "INTELBRAS-1 E ONVIF PERFIL S, T e G", "resolucao_maxima_suportada": "Até 16 MP", "armazenamento_hds": 4, "capacidade_max_por_hd_tb": 24, "compativel_ssd": null, "suporte_poe": "16 portas (130W total)", "rede_portas_ethernet": "1 porta RJ45 (10/100/1000Mbps)", "rede_throughput": "Entrada: 165 Mbps / Saída: 165Mbps", "ia_deteccao_pessoas_veiculos": "Gravador: 4 canais / Câmera: 32 canais", "ia_linha_cerca_virtual": "Gravador: 4 canais / Câmera: 32 canais", "ia_reconhecimento_facial": "Gravador: 1 canal / Câmera: 8 canais", "ia_outras": "Contagem de pessoas: Câmera: 10 canais, Leitura de placas: Câmera: 10 canais" }
+  ]
+};
 
-  // ── DVR 08 CANAIS ──────────────────────────────────────
-  { nome:'MHDX 1108-C', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:8, canaisIPAdicionais:2, canaisIPTotal:10, modoNVR:10, resolucaoMax:'2MP/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:40, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI e IP' },
-  { nome:'MHDX 1308', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:8, canaisIPAdicionais:2, canaisIPTotal:10, modoNVR:10, resolucaoMax:'2MP/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:32, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'MHDX 3108-C', tipo:'DVR', linhaFamilia:'MHDX 3xxx', canais:8, canaisIPAdicionais:4, canaisIPTotal:12, modoNVR:12, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:64, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'iMHDX 3108', tipo:'iMHDX', linhaFamilia:'iMHDX 3xxx', canais:8, canaisIPAdicionais:4, canaisIPTotal:18, modoNVR:12, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'iMHDX 5108', tipo:'iMHDX', linhaFamilia:'iMHDX 5xxx', canais:8, canaisIPAdicionais:8, canaisIPTotal:16, modoNVR:16, resolucaoMax:'4K (8MP)', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:18, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'MHDX 1008-C', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:8, canaisIPAdicionais:2, canaisIPTotal:10, modoNVR:10, resolucaoMax:'2MP/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:40, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI e IP' },
-  { nome:'MHDX 3008-C', tipo:'DVR', linhaFamilia:'MHDX 3xxx', canais:8, canaisIPAdicionais:4, canaisIPTotal:12, modoNVR:12, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:48, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'iMHDX 3008', tipo:'iMHDX', linhaFamilia:'iMHDX 3xxx', canais:8, canaisIPAdicionais:4, canaisIPTotal:12, modoNVR:12, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:64, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+// Processa o banco de dados dinamicamente, substituindo valores e calculando os canais IP adicionais
+const produtos = jsonCompleto.gravadores.map(item => {
+  // Ajuste do rótulo do tipo para interface
+  let parsedTipo = item.tipo;
+  if (item.modelo.includes('iMHDX')) parsedTipo = 'iMHDX';
+  else if (item.modelo.includes('MHDX')) parsedTipo = 'MHDX';
+  else if (item.modelo.includes('iNVD')) parsedTipo = 'iNVD';
+  else if (item.modelo.includes('NVD')) parsedTipo = 'NVR';
 
-  // ── DVR 16 CANAIS ──────────────────────────────────────
-  { nome:'MHDX 1116-C', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:16, canaisIPAdicionais:2, canaisIPTotal:18, modoNVR:18, resolucaoMax:'1080p/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:64, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'MHDX 1316', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:16, canaisIPAdicionais:2, canaisIPTotal:18, modoNVR:18, resolucaoMax:'2MP/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:64, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'MHDX 3116-C', tipo:'DVR', linhaFamilia:'MHDX 3xxx', canais:16, canaisIPAdicionais:8, canaisIPTotal:24, modoNVR:24, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'iMHDX 3116', tipo:'iMHDX', linhaFamilia:'iMHDX 3xxx', canais:16, canaisIPAdicionais:8, canaisIPTotal:24, modoNVR:24, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'iMHDX 5116', tipo:'iMHDX', linhaFamilia:'iMHDX 5xxx', canais:16, canaisIPAdicionais:16, canaisIPTotal:32, modoNVR:32, resolucaoMax:'4K (8MP)', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:18, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'iMHDX 7016', tipo:'iMHDX', linhaFamilia:'iMHDX 7xxx', canais:16, canaisIPAdicionais:8, canaisIPTotal:24, modoNVR:24, resolucaoMax:'5MP/4K IP', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:4, capacidadeMaxHD:22, portas:2, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  const canais = item.canais_fisicos;
+  const isNVR = parsedTipo === 'NVR' || parsedTipo === 'iNVD';
 
-  // ── DVR 32 CANAIS ──────────────────────────────────────
-  { nome:'MHDX 1232', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:32, canaisIPAdicionais:16, canaisIPTotal:16, modoNVR:16, resolucaoMax:'2MP/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'iMHDX 3132', tipo:'iMHDX', linhaFamilia:'iMHDX 3xxx', canais:32, canaisIPAdicionais:8, canaisIPTotal:40, modoNVR:40, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
-  { nome:'iMHDX 7032', tipo:'iMHDX', linhaFamilia:'iMHDX 7xxx', canais:32, canaisIPAdicionais:0, canaisIPTotal:32, modoNVR:32, resolucaoMax:'5MP/4K IP', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:4, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  // Lógica de cálculo dinâmico de expansão IP para manter o configurador funcionando
+  let ipAdic = 0, ipTotal = canais, modoNVR = canais;
+  if (!isNVR) {
+    const seriesMatch = item.modelo.match(/(?:MHDX|iMHDX)\s+(\d)/);
+    const series = seriesMatch ? parseInt(seriesMatch[1]) : 1;
+    if (canais === 4) { ipAdic = 1; }
+    else if (canais === 8) { ipAdic = series >= 5 ? 8 : (series >= 3 ? 4 : 2); }
+    else if (canais === 16) { ipAdic = series >= 5 ? 16 : (series >= 3 ? 8 : 2); }
+    else if (canais === 32) { ipAdic = series >= 3 ? 8 : 16; }
 
-  // ── NVR 04 CANAIS ──────────────────────────────────────
-  { nome:'NVD 1404', tipo:'NVR', linhaFamilia:'NVD 14xx', canais:4, canaisIPAdicionais:0, canaisIPTotal:4, modoNVR:4, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:false, iaBasica:false, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:88, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
-  { nome:'NVD 1404-P', tipo:'NVR', linhaFamilia:'NVD 14xx', canais:4, canaisIPAdicionais:0, canaisIPTotal:4, modoNVR:4, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:false, iaBasica:false, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:88, portesPOE:4, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
+    ipTotal = canais + ipAdic;
+    modoNVR = ipTotal;
+  }
 
-  // ── NVR 08 CANAIS ──────────────────────────────────────
-  { nome:'NVD 1408', tipo:'NVR', linhaFamilia:'NVD 14xx', canais:8, canaisIPAdicionais:0, canaisIPTotal:8, modoNVR:8, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:false, iaBasica:false, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:88, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
-  { nome:'NVD 1408-P', tipo:'NVR', linhaFamilia:'NVD 14xx', canais:8, canaisIPAdicionais:0, canaisIPTotal:8, modoNVR:8, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:false, iaBasica:false, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:88, portesPOE:8, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
-  { nome:'NVD 3308-P', tipo:'NVR', linhaFamilia:'NVD 33xx', canais:8, canaisIPAdicionais:0, canaisIPTotal:8, modoNVR:8, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100', throughput:140, portesPOE:8, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
+  // Define um nível para poder filtrar facilmente
+  let resNivel = 'hd';
+  const resStr = (item.resolucao_maxima_suportada || '').toLowerCase();
+  if (resStr.includes('12 mp') || resStr.includes('16 mp')) resNivel = '12mp';
+  else if (resStr.includes('4k') || resStr.includes('8mp')) resNivel = '4k';
+  else if (resStr.includes('5mp') || resStr.includes('6mp')) resNivel = '5mp';
 
-  // ── NVR 16 CANAIS ──────────────────────────────────────
-  { nome:'NVD 1516', tipo:'NVR', linhaFamilia:'NVD 15xx', canais:16, canaisIPAdicionais:0, canaisIPTotal:16, modoNVR:16, resolucaoMax:'12MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100/1000', throughput:144, portesPOE:0, status:'Phase In', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
-  { nome:'iNVD 1016', tipo:'iNVD', linhaFamilia:'iNVD 10xx', canais:16, canaisIPAdicionais:0, canaisIPTotal:16, modoNVR:16, resolucaoMax:'12MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100/1000', throughput:144, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
-  { nome:'NVD 3316-P', tipo:'NVR', linhaFamilia:'NVD 33xx', canais:16, canaisIPAdicionais:0, canaisIPTotal:16, modoNVR:16, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100/1000', throughput:160, portesPOE:16, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
-  { nome:'iNVD 3016-P', tipo:'iNVD', linhaFamilia:'iNVD 30xx', canais:16, canaisIPAdicionais:0, canaisIPTotal:16, modoNVR:16, resolucaoMax:'16MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:256, portesPOE:16, status:'Phase In', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
-  { nome:'iNVD 3016', tipo:'iNVD', linhaFamilia:'iNVD 30xx', canais:16, canaisIPAdicionais:0, canaisIPTotal:16, modoNVR:16, resolucaoMax:'16MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:165, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
+  // Captura o número de portas PoE para o filtro
+  let poeNum = 0;
+  if (item.suporte_poe) {
+    const match = item.suporte_poe.match(/(\d+)\s*porta/);
+    if (match) poeNum = parseInt(match[1]);
+  }
 
-  // ── NVR 32 CANAIS ──────────────────────────────────────
-  { nome:'NVD 1432', tipo:'NVR', linhaFamilia:'NVD 14xx', canais:32, canaisIPAdicionais:0, canaisIPTotal:32, modoNVR:32, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:false, iaBasica:false, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100/1000', throughput:120, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
-  { nome:'iNVD 3032', tipo:'iNVD', linhaFamilia:'iNVD 30xx', canais:32, canaisIPAdicionais:0, canaisIPTotal:32, modoNVR:32, resolucaoMax:'16MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:256, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
-  { nome:'iNVD 5232', tipo:'iNVD', linhaFamilia:'iNVD 52xx', canais:32, canaisIPAdicionais:0, canaisIPTotal:32, modoNVR:32, resolucaoMax:'16MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:8, capacidadeMaxHD:24, portas:2, portasVelocidade:'10/100/1000', throughput:165, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
-  { nome:'iNVD 5232-16P', tipo:'iNVD', linhaFamilia:'iNVD 52xx', canais:32, canaisIPAdicionais:0, canaisIPTotal:32, modoNVR:32, resolucaoMax:'16MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:4, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:165, portesPOE:16, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
-];
+  // Captura o Throughput base numérico para as ordenações
+  let throughputNum = 0;
+  if (item.rede_throughput) {
+    const tMatch = item.rede_throughput.match(/(\d+)\s*Mbps/i);
+    if (tMatch) throughputNum = parseInt(tMatch[1]);
+  }
+
+  return {
+    nome: item.modelo,
+    tipo: parsedTipo,
+    canais: canais,
+    status: item.status,
+    tecnologias: item.tecnologias_protocolos,
+    resolucaoMax: item.resolucao_maxima_suportada,
+    resolucaoNivel: resNivel,
+    hdsSuportados: item.armazenamento_hds,
+    capacidadeMaxHD: item.capacidade_max_por_hd_tb,
+    armazenamentoFull: `Até ${item.armazenamento_hds} HD${item.armazenamento_hds > 1 ? 's' : ''} de ${item.capacidade_max_por_hd_tb} TB`,
+    compatívelSSD: item.compativel_ssd === 'Sim',
+    portesPOE: poeNum,
+    poeDetalhe: item.suporte_poe && item.suporte_poe !== 'Não' ? item.suporte_poe : 'Não possui',
+    portasDetalhe: item.rede_portas_ethernet,
+    portas: item.rede_portas_ethernet ? parseInt(item.rede_portas_ethernet.match(/\d+/) || [1])[0] : 1,
+    throughputDetalhe: item.rede_throughput,
+    throughput: throughputNum,
+    inteligenciaArtificial: item.ia_deteccao_pessoas_veiculos !== 'Não' && item.ia_deteccao_pessoas_veiculos !== null,
+    reconhecimentoFacial: item.ia_reconhecimento_facial !== 'Não' && item.ia_reconhecimento_facial !== null,
+    linhaECercaVirtual: item.ia_linha_cerca_virtual !== 'Não' && item.ia_linha_cerca_virtual !== null,
+    funcaoPOS: item.ia_outras && item.ia_outras.includes('POS: Sim'),
+    canaisIPAdicionais: ipAdic,
+    canaisIPTotal: ipTotal,
+    modoNVR: modoNVR
+  };
+});
 
 // ============================================================
 // STATE
@@ -1298,17 +1344,15 @@ const totalSteps = 4;
 // ICONS SVG
 // ============================================================
 function getDeviceIcon(tipo, canais) {
-  const c = canais <= 8 ? '#4a9e6e' : '#3a8a5e';
-  return `<svg class="device-icon" viewBox="0 0 56 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="2" y="6" width="52" height="26" rx="3" fill="${c}" opacity="0.3" stroke="${c}" stroke-width="1"/>
-    <rect x="2" y="6" width="52" height="5" rx="2" fill="${c}" opacity="0.5"/>
-    <rect x="6" y="15" width="8" height="8" rx="1" fill="${c}" opacity="0.6"/>
-    <rect x="18" y="15" width="8" height="8" rx="1" fill="${c}" opacity="0.6"/>
-    <rect x="30" y="15" width="8" height="8" rx="1" fill="${c}" opacity="0.6"/>
-    <rect x="42" y="15" width="8" height="8" rx="1" fill="${c}" opacity="0.6"/>
-    <circle cx="46" cy="9.5" r="1.5" fill="${tipo.includes('NVR') || tipo.includes('iNVD') ? '#2196F3' : '#00C854'}"/>
-    <circle cx="50" cy="9.5" r="1.5" fill="#00C854"/>
-    ${canais >= 8 ? `<text x="28" y="31" text-anchor="middle" fill="${c}" font-size="7" font-weight="bold">${canais}ch</text>` : ''}
+  return `<svg class="device-icon" viewBox="0 0 56 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: var(--text-muted)">
+    <rect x="2" y="6" width="52" height="26" rx="3" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="1"/>
+    <rect x="2" y="6" width="52" height="5" rx="2" fill="currentColor" opacity="0.2"/>
+    <rect x="6" y="15" width="8" height="8" rx="1" fill="currentColor" opacity="0.3"/>
+    <rect x="18" y="15" width="8" height="8" rx="1" fill="currentColor" opacity="0.3"/>
+    <rect x="30" y="15" width="8" height="8" rx="1" fill="currentColor" opacity="0.3"/>
+    <rect x="42" y="15" width="8" height="8" rx="1" fill="currentColor" opacity="0.3"/>
+    <circle cx="46" cy="9.5" r="1.5" fill="var(--primary)"/>
+    <circle cx="50" cy="9.5" r="1.5" fill="var(--primary)"/>
   </svg>`;
 }
 
@@ -1323,17 +1367,17 @@ function renderizarProdutos(lista) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
       <div class="empty-icon">🔍</div>
       <div class="empty-title">Nenhum modelo encontrado</div>
-      <div class="empty-desc">Tente ajustar os filtros</div>
+      <div class="empty-desc">Tente ajustar os filtros na barra lateral.</div>
     </div>`;
     return;
   }
 
   grid.innerHTML = lista.map(p => {
     const isInCompare = comparacao.some(c => c.nome === p.nome);
-    const isDiscontinued = p.status === 'Descontinuado';
+    const isDiscontinued = p.status.includes('Descontinuado');
     const tipoClass = (p.tipo === 'NVR' || p.tipo === 'iNVD') ? 'nvr' : p.tipo === 'iMHDX' ? 'imhdx' : '';
     const statusClass = isDiscontinued ? 'discontinued' : p.status === 'Phase In' ? 'phase-in' : 'active';
-    const statusText = isDiscontinued ? '⚠ Descontinuado' : p.status === 'Phase In' ? '↗ Phase In' : '✓ Em linha';
+    const statusText = isDiscontinued ? 'Descontinuado' : p.status === 'Phase In' ? 'Phase In' : 'Em linha';
 
     return `<div class="product-card${isDiscontinued ? ' discontinued' : ''}${isInCompare ? ' in-compare' : ''}" onclick="verDetalhes('${p.nome}')">
       <div class="status-badge ${statusClass}">${statusText}</div>
@@ -1345,9 +1389,13 @@ function renderizarProdutos(lista) {
         </div>
       </div>
       <div class="card-body">
+        <div class="card-stat highlight-stat">
+          <div class="card-stat-label">Qualidade de Gravação / Visualização</div>
+          <div class="card-stat-value">${p.resolucaoMax}</div>
+        </div>
         <div class="card-stat">
           <div class="card-stat-label">Canais Analógicos</div>
-          <div class="card-stat-value">${p.canais}ch</div>
+          <div class="card-stat-value">${p.canais} canais</div>
         </div>
         <div class="card-stat">
           <div class="card-stat-label">Modo NVR</div>
@@ -1355,30 +1403,25 @@ function renderizarProdutos(lista) {
         </div>
         ${p.canaisIPAdicionais > 0 || p.tipo === 'NVR' || p.tipo === 'iNVD' ? `
         <div class="card-ip-expansion">
-          <span class="ip-icon">🌐</span>
           <div>
             <div class="ip-label">${(p.tipo === 'NVR' || p.tipo === 'iNVD') ? 'Canais IP' : 'Expansão IP'}</div>
             <div class="ip-value">${p.canaisIPTotal} canais IP total</div>
           </div>
         </div>` : ''}
-        <div class="card-stat">
-          <div class="card-stat-label">Resolução Máx.</div>
-          <div class="card-stat-value" style="font-size:11px">${p.resolucaoMax}</div>
+        <div class="card-stat" style="grid-column: 1 / -1;">
+          <div class="card-stat-label">Armazenamento Suportado</div>
+          <div class="card-stat-value">${p.armazenamentoFull}</div>
         </div>
-        <div class="card-stat">
-          <div class="card-stat-label">Throughput</div>
-          <div class="card-stat-value">${p.throughput} Mbps</div>
-        </div>
-        <div class="card-stat">
-          <div class="card-stat-label">HDs suportados</div>
-          <div class="card-stat-value">${p.hdsSuportados} × ${p.capacidadeMaxHD}TB</div>
+        <div class="card-stat" style="grid-column: 1 / -1;">
+          <div class="card-stat-label">Throughput (Rede)</div>
+          <div class="card-stat-value" style="font-size: 12px; color: var(--text-muted);">${p.throughputDetalhe}</div>
         </div>
         <div class="card-stat">
           <div class="card-stat-label">IA</div>
           <div class="card-stat-value">
-            ${p.reconhecimentoFacial ? '<span class="ai-badge full">IA Completa 🧠</span>' :
-              p.inteligenciaArtificial ? '<span class="ai-badge">IA Básica 🤖</span>' :
-              '<span style="color:var(--cinza-texto);font-size:12px">—</span>'}
+            ${p.reconhecimentoFacial ? '<span class="ai-badge full">Completa</span>' :
+              p.inteligenciaArtificial ? '<span class="ai-badge">Básica</span>' :
+              '<span style="color:var(--text-muted);font-size:12px">—</span>'}
           </div>
         </div>
         <div class="card-stat">
@@ -1389,10 +1432,10 @@ function renderizarProdutos(lista) {
       <div class="card-footer" onclick="event.stopPropagation()">
         <button class="btn-secondary${isInCompare ? ' added' : ''}"
           onclick="toggleComparacao('${p.nome}')"
-          ${!isInCompare && comparacao.length >= 4 ? 'disabled style="opacity:.4;cursor:not-allowed"' : ''}>
-          ${isInCompare ? '✓ Na comparação' : '+ Comparar'}
+          ${!isInCompare && comparacao.length >= 4 ? 'disabled' : ''}>
+          ${isInCompare ? 'Comparando' : 'Comparar'}
         </button>
-        <button class="btn-primary" onclick="verDetalhes('${p.nome}')">Ver detalhes</button>
+        <button class="btn-primary" onclick="verDetalhes('${p.nome}')">Detalhes</button>
       </div>
     </div>`;
   }).join('');
@@ -1413,7 +1456,7 @@ function aplicarFiltros() {
     if (filtros.ia && !p.inteligenciaArtificial) return false;
     if (filtros.face && !p.reconhecimentoFacial) return false;
     if (filtros.poe && p.portesPOE === 0) return false;
-    if (filtros.status !== 'todos' && p.status !== filtros.status) return false;
+    if (filtros.status !== 'todos' && !p.status.includes(filtros.status)) return false;
     if (filtros.resolucao !== 'todos') {
       const r = filtros.resolucao;
       if (r === '1080p' && p.resolucaoNivel !== 'hd') return false;
@@ -1450,15 +1493,6 @@ function toggleChip(el, tipo) {
   aplicarFiltros();
 }
 
-function toggleFilter(tipo) {
-  const btn = document.getElementById('toggle' + tipo.charAt(0).toUpperCase() + tipo.slice(1));
-  const newState = !btn.classList.contains('on');
-  btn.classList.toggle('on', newState);
-  filtros[tipo] = newState;
-  aplicarFiltros();
-}
-
-// Fix toggle ID names
 function toggleFilter(tipo) {
   const ids = { ip:'toggleIP', ia:'toggleIA', face:'toggleFace', poe:'togglePoE' };
   const btn = document.getElementById(ids[tipo]);
@@ -1528,9 +1562,8 @@ function renderizarComparador() {
   if (comparacao.length === 0) {
     subtitle.textContent = 'Selecione até 4 modelos no catálogo';
     content.innerHTML = `<div class="empty-state">
-      <div class="empty-icon">⚖️</div>
       <div class="empty-title">Nenhum modelo selecionado</div>
-      <div class="empty-desc">Vá ao catálogo e clique em "+ Comparar" nos modelos desejados</div>
+      <div class="empty-desc">Vá ao catálogo e clique em "Comparar" nos modelos desejados.</div>
     </div>`;
     return;
   }
@@ -1539,27 +1572,23 @@ function renderizarComparador() {
 
   const specs = [
     { key:'tipo', label:'Tipo', format: v => v },
-    { key:'canais', label:'Canais Analógicos', format: v => v + 'ch' },
-    { key:'canaisIPAdicionais', label:'🌐 Câmeras IP Adicionais', format: v => v > 0 ? v + ' câmeras' : '—', isIP:true },
-    { key:'canaisIPTotal', label:'🌐 Total IP (modo NVR)', format: v => v + ' câmeras', isIP:true },
+    { key:'canais', label:'Canais Analógicos', format: v => v + ' canais' },
+    { key:'canaisIPAdicionais', label:'Câmeras IP Adicionais', format: v => v > 0 ? v + ' câmeras' : '—', isIP:true },
+    { key:'canaisIPTotal', label:'Total IP (modo NVR)', format: v => v + ' câmeras', isIP:true },
     { key:'modoNVR', label:'Modo NVR (só IP)', format: v => 'até ' + v + ' câmeras' },
-    { key:'resolucaoMax', label:'Resolução Máxima', format: v => v },
-    { key:'inteligenciaArtificial', label:'Inteligência Artificial', format: v => v ? '✓ Sim' : '✗ Não', isBool:true },
-    { key:'reconhecimentoFacial', label:'Reconhecimento Facial', format: v => v ? '✓ Sim' : '✗ Não', isBool:true },
-    { key:'linhaECercaVirtual', label:'Linha e Cerca Virtual', format: v => v ? '✓ Sim' : '✗ Não', isBool:true },
-    { key:'funcaoPOS', label:'Função POS', format: v => v ? '✓ Sim' : '✗ Não', isBool:true },
-    { key:'compressao', label:'Compressão', format: v => v },
-    { key:'compatívelSSD', label:'Compatível SSD', format: v => v ? '✓ Sim' : '✗ Não', isBool:true },
-    { key:'hdsSuportados', label:'HDs Suportados', format: v => v + ' unidade' + (v > 1 ? 's' : '') },
-    { key:'capacidadeMaxHD', label:'Capacidade Máx. por HD', format: v => v + ' TB' },
-    { key:'portesPOE', label:'Portas PoE', format: v => v > 0 ? v + ' portas' : '—' },
-    { key:'portas', label:'Portas Ethernet', format: v => v },
-    { key:'portasVelocidade', label:'Velocidade Ethernet', format: v => v + ' Mbps' },
-    { key:'throughput', label:'Throughput', format: v => v + ' Mbps' },
+    { key:'resolucaoMax', label:'Qualidade Leitura/Gravação', format: v => v, isHighlight:true },
+    { key:'inteligenciaArtificial', label:'Inteligência Artificial', format: v => v ? 'Sim' : 'Não', isBool:true },
+    { key:'reconhecimentoFacial', label:'Reconhecimento Facial', format: v => v ? 'Sim' : 'Não', isBool:true },
+    { key:'linhaECercaVirtual', label:'Linha e Cerca Virtual', format: v => v ? 'Sim' : 'Não', isBool:true },
+    { key:'funcaoPOS', label:'Função POS', format: v => v ? 'Sim' : 'Não', isBool:true },
+    { key:'armazenamentoFull', label:'Armazenamento Suportado', format: v => v },
+    { key:'compatívelSSD', label:'Compatível SSD', format: v => v ? 'Sim' : 'Não', isBool:true },
+    { key:'poeDetalhe', label:'Portas PoE', format: v => v },
+    { key:'portasDetalhe', label:'Portas Ethernet', format: v => v },
+    { key:'throughputDetalhe', label:'Throughput (Rede)', format: v => v },
     { key:'status', label:'Status', format: v => v },
   ];
 
-  // Detect differences
   const isDiff = (key) => {
     const vals = comparacao.map(p => p[key]);
     return new Set(vals).size > 1;
@@ -1576,7 +1605,7 @@ function renderizarComparador() {
       <div style="display:flex;align-items:flex-start;justify-content:space-between">
         <div>
           <div class="col-model-name">${p.nome}</div>
-          <div style="font-size:11px;color:var(--cinza-texto);margin-top:3px">${p.tipo} · ${p.canais}ch</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${p.tipo} · ${p.canais} canais</div>
         </div>
         <button class="btn-remove-compare" onclick="toggleComparacao('${p.nome}')">✕</button>
       </div>
@@ -1585,7 +1614,10 @@ function renderizarComparador() {
   const rows = specs.map(spec => {
     const diff = isDiff(spec.key);
     const best = getBest(spec.key);
-    const rowClass = spec.isIP ? 'best-row' : diff ? 'diff-row' : '';
+    let rowClass = spec.isIP ? 'best-row' : diff ? 'diff-row' : '';
+    
+    if (spec.isHighlight) rowClass = 'highlight-row';
+
     const cells = comparacao.map(p => {
       const val = p[spec.key];
       const isBestVal = best !== null && val === best;
@@ -1601,13 +1633,13 @@ function renderizarComparador() {
   content.innerHTML = `
     <table class="comparator-table">
       <thead><tr>
-        <th class="row-label" style="background:var(--verde-fundo)">Especificação</th>
+        <th class="row-label" style="background:var(--bg)">Especificação</th>
         ${cols}
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <div style="margin-top:16px;font-size:11px;color:var(--cinza-texto)">
-      🟡 Linhas amarelas = diferença entre modelos &nbsp;|&nbsp; 🟢 Linhas verdes = destaque IP &nbsp;|&nbsp; ★ = Melhor valor na categoria
+    <div style="margin-top:20px;font-size:12px;color:var(--text-muted)">
+      Destaques: Linhas amarelas indicam diferença entre os modelos. Linhas esverdeadas ressaltam a capacidade IP. (★) indica o melhor valor na categoria.
     </div>`;
 }
 
@@ -1615,7 +1647,7 @@ function getTooltip(key) {
   const tips = {
     canaisIPAdicionais: 'Câmeras IP que podem ser adicionadas além dos canais analógicos',
     canaisIPTotal: 'Total de câmeras IP suportadas no modo NVR puro',
-    throughput: 'Largura de banda total de entrada/saída de dados',
+    throughputDetalhe: 'Largura de banda total de entrada/saída de dados',
     reconhecimentoFacial: 'Detecção e identificação biométrica facial',
     linhaECercaVirtual: 'Alarme virtual por linha ou perímetro definido',
     modoNVR: 'Quantidade máxima de câmeras IP no modo somente NVR',
@@ -1635,21 +1667,20 @@ function verDetalhes(nome) {
   const specs = [
     ['Tipo', p.tipo],
     ['Status', p.status],
-    ['Canais analógicos', p.canais + ' câmeras'],
+    ['Canais analógicos', p.canais + ' canais'],
     ['Câmeras IP adicionais', p.canaisIPAdicionais + ' câmeras (total ' + p.canaisIPTotal + ' canais)'],
     ['Modo NVR (só IP)', 'Até ' + p.modoNVR + ' câmeras'],
-    ['Resolução máxima', p.resolucaoMax],
-    ['Compressão', p.compressao],
-    ['HDs suportados', p.hdsSuportados + ' × até ' + p.capacidadeMaxHD + ' TB'],
+    ['Armazenamento', p.armazenamentoFull],
+    ['Qualidade Leitura/Gravação', p.resolucaoMax],
     ['Compatível com SSD', p.compatívelSSD ? 'Sim' : 'Não'],
-    ['Inteligência Artificial', p.inteligenciaArtificial ? 'Sim (detecção de pessoas/veículos)' : 'Não'],
+    ['Tecnologias', p.tecnologias],
+    ['Inteligência Artificial', p.inteligenciaArtificial ? 'Sim (básica)' : 'Não'],
     ['Reconhecimento Facial', p.reconhecimentoFacial ? 'Sim' : 'Não'],
     ['Linha e Cerca Virtual', p.linhaECercaVirtual ? 'Sim' : 'Não'],
     ['Função POS', p.funcaoPOS ? 'Sim' : 'Não'],
-    ['Portas PoE', p.portesPOE > 0 ? p.portesPOE + ' portas' : 'Não'],
-    ['Portas Ethernet', p.portas + ' porta(s) RJ45 ' + p.portasVelocidade + ' Mbps'],
-    ['Throughput', p.throughput + ' Mbps'],
-    ['Tecnologias', p.tecnologias],
+    ['Portas PoE', p.poeDetalhe],
+    ['Portas Ethernet', p.portasDetalhe],
+    ['Throughput (Rede)', p.throughputDetalhe],
   ];
 
   const isInCompare = comparacao.some(c => c.nome === nome);
@@ -1665,21 +1696,25 @@ function verDetalhes(nome) {
     </div>
     <div class="modal-body">
       ${p.canaisIPAdicionais > 0 || p.tipo === 'NVR' || p.tipo === 'iNVD' ? `
-      <div class="card-ip-expansion" style="margin-bottom:16px">
-        <span class="ip-icon">🌐</span>
+      <div class="card-ip-expansion" style="margin-bottom:20px; border-color:var(--border)">
         <div>
           <div class="ip-label">Expansão / Canais IP</div>
           <div class="ip-value">${p.canaisIPTotal} canais IP total (modo NVR puro)</div>
         </div>
       </div>` : ''}
       <table class="spec-table">
-        ${specs.map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('')}
+        ${specs.map(([l,v]) => {
+          if (l === 'Qualidade Leitura/Gravação') {
+            return `<tr style="background:var(--highlight-melhor)"><td style="color:var(--primary); font-weight:600">${l}</td><td style="color:var(--primary); font-weight:700">${v}</td></tr>`;
+          }
+          return `<tr><td>${l}</td><td>${v}</td></tr>`;
+        }).join('')}
       </table>
-      <div style="display:flex;gap:10px;margin-top:20px">
-        <button class="btn-secondary${isInCompare ? ' added' : ''}" style="flex:1;padding:10px"
+      <div style="display:flex;gap:12px;margin-top:24px">
+        <button class="btn-secondary${isInCompare ? ' added' : ''}" style="flex:1"
           onclick="toggleComparacao('${nome}');fecharModal()"
           ${!canAdd ? 'disabled' : ''}>
-          ${isInCompare ? '✓ Remover da comparação' : '+ Adicionar à comparação'}
+          ${isInCompare ? 'Remover da comparação' : 'Adicionar à comparação'}
         </button>
       </div>
     </div>`;
@@ -1756,27 +1791,23 @@ function calcularRecomendacao() {
   const { cameras, usaIP, ia, resolucao } = configAnswers;
   const camNum = parseInt(cameras);
 
-  let candidatos = produtos.filter(p => p.status !== 'Descontinuado');
+  let candidatos = produtos.filter(p => !p.status.includes('Descontinuado'));
 
-  // Filter by camera count
-  candidatos = candidatos.filter(p => {
-    if (usaIP === 'todas') return p.modoNVR >= camNum;
-    return p.canais >= camNum || (usaIP !== 'nao' && p.modoNVR >= camNum);
-  });
+  if (usaIP === 'todas') {
+    candidatos = candidatos.filter(p => p.modoNVR >= camNum);
+  } else {
+    candidatos = candidatos.filter(p => p.canais >= camNum || (usaIP !== 'nao' && p.modoNVR >= camNum));
+  }
 
-  // Filter by IP
   if (usaIP === 'algumas') candidatos = candidatos.filter(p => p.canaisIPAdicionais > 0 || p.tipo === 'NVR' || p.tipo === 'iNVD');
   if (usaIP === 'todas') candidatos = candidatos.filter(p => p.tipo === 'NVR' || p.tipo === 'iNVD');
 
-  // Filter by IA
   if (ia === 'basica') candidatos = candidatos.filter(p => p.inteligenciaArtificial);
   if (ia === 'avancada') candidatos = candidatos.filter(p => p.reconhecimentoFacial);
 
-  // Filter by resolution
   if (resolucao === '5mp') candidatos = candidatos.filter(p => ['5mp','4k','12mp'].includes(p.resolucaoNivel));
   if (resolucao === '4k') candidatos = candidatos.filter(p => ['4k','12mp'].includes(p.resolucaoNivel));
 
-  // Score
   const scored = candidatos.map(p => {
     let score = 0;
     if (p.canaisIPAdicionais > 0) score += 10;
@@ -1806,9 +1837,8 @@ function renderizarResultados(lista, cameras, usaIP, ia, resolucao) {
 
   if (!lista.length) {
     document.getElementById('resultCards').innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-      <div class="empty-icon">😕</div>
-      <div class="empty-title">Nenhum modelo encontrado</div>
-      <div class="empty-desc">Tente ajustar suas necessidades</div>
+      <div class="empty-title">Nenhum modelo encontrado com essas exatas definições.</div>
+      <div class="empty-desc">Tente ajustar os parâmetros no configurador ou navegue pelo catálogo completo.</div>
     </div>`;
     return;
   }
@@ -1816,15 +1846,15 @@ function renderizarResultados(lista, cameras, usaIP, ia, resolucao) {
   document.getElementById('resultCards').innerHTML = lista.map((p, i) => {
     let ribbon, ribbonClass, reason;
     if (i === 0) {
-      ribbon = '⭐ Melhor opção';
+      ribbon = 'Melhor Opção';
       ribbonClass = 'best';
       reason = `Melhor combinação de recursos para suas necessidades: ${p.canaisIPTotal > p.canais ? 'expansão IP, ' : ''}${p.inteligenciaArtificial ? 'IA integrada, ' : ''}throughput de ${p.throughput}Mbps.`;
     } else if (i === 1) {
-      ribbon = '💰 Melhor custo-benefício';
+      ribbon = 'Custo-Benefício';
       ribbonClass = 'cost';
-      reason = `Boa relação recursos/preço com ${p.canais}ch e ${p.resolucaoMax}.`;
+      reason = `Boa relação recursos/preço com ${p.canais} canais e ${p.resolucaoMax}.`;
     } else {
-      ribbon = `🔄 Alternativa ${i - 1}`;
+      ribbon = `Alternativa ${i - 1}`;
       ribbonClass = 'alt';
       reason = `Opção válida com ${p.canaisIPTotal} canais IP e ${p.resolucaoMax}.`;
     }
@@ -1837,19 +1867,22 @@ function renderizarResultados(lista, cameras, usaIP, ia, resolucao) {
         <div class="card-img-wrap">${getDeviceIcon(p.tipo, p.canais)}</div>
         <div class="card-title-area">
           <div class="card-model">${p.nome}</div>
-          <div class="card-tipo">${p.tipo} · ${p.canais}ch</div>
+          <div class="card-tipo">${p.tipo} · ${p.canais} canais</div>
         </div>
       </div>
       <div class="reason-box">${reason}</div>
       <div class="card-body">
-        <div class="card-stat"><div class="card-stat-label">IP Total</div><div class="card-stat-value cell-ip">${p.canaisIPTotal}ch</div></div>
-        <div class="card-stat"><div class="card-stat-label">Resolução</div><div class="card-stat-value" style="font-size:11px">${p.resolucaoMax}</div></div>
-        <div class="card-stat"><div class="card-stat-label">IA</div><div class="card-stat-value">${p.reconhecimentoFacial ? '🧠 Completa' : p.inteligenciaArtificial ? '🤖 Básica' : '—'}</div></div>
+        <div class="card-stat highlight-stat" style="margin-bottom:12px; grid-column:1/-1;">
+          <div class="card-stat-label">Gravação / Visualização</div>
+          <div class="card-stat-value" style="font-size:12px">${p.resolucaoMax}</div>
+        </div>
+        <div class="card-stat"><div class="card-stat-label">IP Total</div><div class="card-stat-value cell-ip">${p.canaisIPTotal} canais</div></div>
         <div class="card-stat"><div class="card-stat-label">HDs</div><div class="card-stat-value">${p.hdsSuportados} × ${p.capacidadeMaxHD}TB</div></div>
+        <div class="card-stat" style="grid-column: 1 / -1;"><div class="card-stat-label">IA</div><div class="card-stat-value">${p.reconhecimentoFacial ? 'Completa' : p.inteligenciaArtificial ? 'Básica' : '—'}</div></div>
       </div>
       <div class="card-footer">
         <button class="btn-secondary${isInCompare ? ' added' : ''}" onclick="toggleComparacao('${p.nome}')">
-          ${isInCompare ? '✓ Comparando' : '+ Comparar'}
+          ${isInCompare ? 'Comparando' : 'Comparar'}
         </button>
         <button class="btn-primary" onclick="verDetalhes('${p.nome}')">Detalhes</button>
       </div>
@@ -1877,7 +1910,7 @@ function toggleTheme() {
   const html = document.documentElement;
   const isLight = html.getAttribute('data-theme') === 'light';
   html.setAttribute('data-theme', isLight ? '' : 'light');
-  document.getElementById('toggleTheme').textContent = isLight ? '🌙' : '☀️';
+  document.getElementById('toggleTheme').textContent = isLight ? '☀️' : '🌙';
 }
 
 // ============================================================
