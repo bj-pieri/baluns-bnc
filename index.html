@@ -1,716 +1,1890 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia Técnico de Cabeamento: CFTV e Alarmes (Foco Intelbras)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Custom Styles for specific visual elements */
-        .cable-layer {
-            transition: all 0.3s ease;
-        }
-        .cable-layer:hover {
-            transform: scale(1.05);
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            height: 400px;
-            margin: 0 auto;
-        }
-        .tab-active {
-            border-bottom: 2px solid #00a000;
-            color: #00a000;
-            font-weight: bold;
-        }
-        .tab-inactive {
-            color: #6b7280;
-        }
-        .scenario-card {
-            transition: transform 0.2s;
-            cursor: pointer;
-        }
-        .scenario-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelbras — Configurador de Gravadores</title>
+<style>
+:root {
+  --verde: #006B3C;
+  --verde-claro: #00C854;
+  --verde-escuro: #004D2B;
+  --verde-fundo: #0A2E1E;
+  --verde-card: #0D3B26;
+  --branco: #FFFFFF;
+  --cinza-claro: #F0F4F2;
+  --cinza-medio: #C8D5CF;
+  --cinza-texto: #8BA99A;
+  --texto: #1A2E24;
+  --texto-secundario: #4A6B5A;
+  --borda: #1E4A32;
+  --azul-ip: #2196F3;
+  --azul-ip-claro: #E3F2FD;
+  --dourado: #FFB300;
+  --vermelho: #E53935;
+  --highlight-melhor: rgba(0,200,84,0.15);
+  --highlight-diff: rgba(255,179,0,0.12);
+  --shadow: 0 4px 24px rgba(0,0,0,0.18);
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: all 0.22s cubic-bezier(.4,0,.2,1);
+}
+
+[data-theme="light"] {
+  --verde-fundo: #F0F4F2;
+  --verde-card: #FFFFFF;
+  --borda: #D0E0D8;
+  --texto: #1A2E24;
+  --texto-secundario: #4A6B5A;
+  --cinza-claro: #E8F0EC;
+  --shadow: 0 4px 24px rgba(0,0,0,0.10);
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Segoe UI', 'SF Pro Display', system-ui, -apple-system, sans-serif;
+  background: var(--verde-fundo);
+  color: var(--branco);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* HEADER */
+.header {
+  background: var(--verde-escuro);
+  border-bottom: 1px solid var(--borda);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--branco);
+}
+
+.logo-badge {
+  background: var(--verde-claro);
+  color: var(--verde-escuro);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-icon {
+  background: none;
+  border: 1px solid var(--borda);
+  color: var(--branco);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: var(--transition);
+}
+.btn-icon:hover { background: var(--borda); }
+
+.compare-badge {
+  background: var(--verde-claro);
+  color: var(--verde-escuro);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+.compare-badge:hover { background: #00E060; transform: scale(1.03); }
+.compare-badge .count {
+  background: var(--verde-escuro);
+  color: var(--verde-claro);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+
+/* TABS NAV */
+.tabs-nav {
+  display: flex;
+  gap: 4px;
+  padding: 16px 24px 0;
+  border-bottom: 1px solid var(--borda);
+  background: var(--verde-escuro);
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--cinza-texto);
+  padding: 10px 18px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: var(--transition);
+  border-bottom: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.tab-btn:hover { color: var(--branco); }
+.tab-btn.active {
+  color: var(--verde-claro);
+  border-bottom-color: var(--verde-claro);
+  background: rgba(0,200,84,0.08);
+}
+
+.tab-icon { font-size: 15px; }
+
+/* MAIN LAYOUT */
+.main {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 0;
+  min-height: calc(100vh - 109px);
+}
+
+/* SIDEBAR FILTERS */
+.sidebar {
+  background: var(--verde-card);
+  border-right: 1px solid var(--borda);
+  padding: 20px;
+  overflow-y: auto;
+  position: sticky;
+  top: 109px;
+  height: calc(100vh - 109px);
+}
+
+.sidebar-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--cinza-texto);
+  margin-bottom: 16px;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cinza-medio);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.search-box {
+  background: var(--verde-fundo);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  color: var(--branco);
+  font-size: 13px;
+  width: 100%;
+  outline: none;
+  transition: var(--transition);
+}
+.search-box:focus { border-color: var(--verde-claro); }
+.search-box::placeholder { color: var(--cinza-texto); }
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  background: var(--verde-fundo);
+  border: 1px solid var(--borda);
+  border-radius: 20px;
+  padding: 5px 11px;
+  font-size: 12px;
+  color: var(--cinza-medio);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.chip:hover { border-color: var(--verde-claro); color: var(--verde-claro); }
+.chip.active {
+  background: var(--verde-claro);
+  color: var(--verde-escuro);
+  border-color: var(--verde-claro);
+  font-weight: 700;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--borda);
+}
+.toggle-row:last-child { border-bottom: none; }
+
+.toggle-label {
+  font-size: 12px;
+  color: var(--cinza-medio);
+}
+
+.toggle {
+  width: 36px;
+  height: 20px;
+  background: var(--borda);
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition);
+  border: none;
+  outline: none;
+}
+.toggle.on { background: var(--verde-claro); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: white;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: var(--transition);
+}
+.toggle.on::after { left: 19px; }
+
+.results-count {
+  font-size: 11px;
+  color: var(--cinza-texto);
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: var(--verde-fundo);
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+.results-count strong { color: var(--verde-claro); }
+
+.btn-clear {
+  background: none;
+  border: 1px solid var(--borda);
+  color: var(--cinza-texto);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  font-size: 11px;
+  cursor: pointer;
+  width: 100%;
+  transition: var(--transition);
+  margin-top: 4px;
+}
+.btn-clear:hover { color: var(--vermelho); border-color: var(--vermelho); }
+
+/* CONTENT AREA */
+.content {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* ORDERING BAR */
+.sort-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.sort-label { font-size: 12px; color: var(--cinza-texto); }
+
+.sort-select {
+  background: var(--verde-card);
+  border: 1px solid var(--borda);
+  color: var(--branco);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* PRODUCT GRID */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.product-card {
+  background: var(--verde-card);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius);
+  padding: 0;
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+}
+.product-card:hover {
+  border-color: var(--verde-claro);
+  box-shadow: 0 0 0 1px var(--verde-claro), var(--shadow-card);
+  transform: translateY(-2px);
+}
+.product-card.in-compare {
+  border-color: var(--verde-claro);
+  box-shadow: 0 0 0 2px var(--verde-claro);
+}
+.product-card.discontinued { opacity: 0.65; }
+
+.card-header {
+  background: var(--verde-fundo);
+  padding: 16px 16px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.card-img-wrap {
+  width: 64px;
+  height: 48px;
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.device-icon {
+  width: 56px;
+  height: 36px;
+}
+
+.card-title-area { flex: 1; min-width: 0; }
+
+.card-model {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--branco);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.card-tipo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--cinza-medio);
+}
+.card-tipo.nvr { background: rgba(33,150,243,0.15); color: #90CAF9; }
+.card-tipo.imhdx { background: rgba(0,200,84,0.15); color: var(--verde-claro); }
+
+.status-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.status-badge.active { background: rgba(0,200,84,0.2); color: var(--verde-claro); }
+.status-badge.discontinued { background: rgba(229,57,53,0.2); color: #EF9A9A; }
+.status-badge.phase-in { background: rgba(255,179,0,0.2); color: var(--dourado); }
+
+.card-body {
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.card-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.card-stat-label {
+  font-size: 10px;
+  color: var(--cinza-texto);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.card-stat-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--branco);
+}
+
+/* IP expansion highlight */
+.card-ip-expansion {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(33,150,243,0.15), rgba(0,200,84,0.1));
+  border: 1px solid rgba(33,150,243,0.3);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-ip-expansion .ip-label {
+  font-size: 10px;
+  color: #90CAF9;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.card-ip-expansion .ip-value {
+  font-size: 13px;
+  font-weight: 800;
+  color: #64B5F6;
+}
+.ip-icon { font-size: 16px; }
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: linear-gradient(135deg, #1A237E, #3949AB);
+  color: #90CAF9;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.ai-badge.full { background: linear-gradient(135deg, #004D40, #00897B); color: #A7FFEB; }
+
+.card-footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--borda);
+  display: flex;
+  gap: 8px;
+}
+
+.btn-primary, .btn-secondary {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--verde-claro);
+  color: var(--verde-escuro);
+}
+.btn-primary:hover { background: #00E060; }
+.btn-primary:disabled {
+  background: var(--borda);
+  color: var(--cinza-texto);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: none;
+  border: 1px solid var(--borda);
+  color: var(--cinza-medio);
+}
+.btn-secondary:hover { border-color: var(--verde-claro); color: var(--verde-claro); }
+.btn-secondary.added {
+  background: rgba(0,200,84,0.15);
+  border-color: var(--verde-claro);
+  color: var(--verde-claro);
+}
+
+/* COMPARATOR PANEL */
+.comparator-panel {
+  display: none;
+  background: var(--verde-card);
+}
+.comparator-panel.active { display: block; }
+
+.comparator-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--borda);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.comparator-title {
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-export {
+  background: var(--verde-claro);
+  color: var(--verde-escuro);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-export:hover { background: #00E060; }
+
+.comparator-table-wrap {
+  overflow-x: auto;
+  padding: 20px 24px;
+}
+
+.comparator-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.comparator-table th, .comparator-table td {
+  padding: 11px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--borda);
+  vertical-align: top;
+  font-size: 13px;
+}
+
+.comparator-table th {
+  background: var(--verde-fundo);
+  font-weight: 800;
+  position: sticky;
+  top: 0;
+}
+
+.comparator-table .row-label {
+  color: var(--cinza-texto);
+  font-size: 12px;
+  font-weight: 600;
+  width: 180px;
+  background: var(--verde-fundo);
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+
+.comparator-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.comparator-table .diff-row td:not(.row-label) {
+  background: var(--highlight-diff);
+}
+
+.comparator-table .best-row td:not(.row-label) {
+  background: var(--highlight-melhor);
+}
+
+.compare-col-header {
+  min-width: 200px;
+}
+
+.col-model-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--branco);
+}
+
+.btn-remove-compare {
+  background: none;
+  border: none;
+  color: var(--cinza-texto);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px;
+  transition: var(--transition);
+  float: right;
+}
+.btn-remove-compare:hover { color: var(--vermelho); }
+
+.cell-yes { color: var(--verde-claro); font-weight: 700; }
+.cell-no { color: var(--cinza-texto); }
+.cell-highlight { color: var(--verde-claro); font-weight: 800; }
+.cell-ip { color: #64B5F6; font-weight: 800; }
+.cell-best::after {
+  content: ' ★';
+  color: var(--dourado);
+}
+
+/* CONFIGURATOR */
+.configurator-wrap {
+  display: none;
+  max-width: 680px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+.configurator-wrap.active { display: block; }
+
+.config-step {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.config-step.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.config-progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 32px;
+}
+.config-dot {
+  flex: 1;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--borda);
+  transition: var(--transition);
+}
+.config-dot.done { background: var(--verde-claro); }
+
+.config-question {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.config-subtitle {
+  font-size: 14px;
+  color: var(--cinza-texto);
+  margin-bottom: 28px;
+}
+
+.config-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.config-option {
+  background: var(--verde-card);
+  border: 2px solid var(--borda);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.config-option:hover { border-color: var(--verde-claro); background: rgba(0,200,84,0.05); }
+.config-option.selected {
+  border-color: var(--verde-claro);
+  background: rgba(0,200,84,0.12);
+}
+
+.config-option-icon { font-size: 28px; margin-bottom: 8px; }
+.config-option-label { font-size: 13px; font-weight: 700; }
+.config-option-sub { font-size: 11px; color: var(--cinza-texto); margin-top: 3px; }
+
+.config-nav {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-back {
+  background: none;
+  border: 1px solid var(--borda);
+  color: var(--cinza-medio);
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-back:hover { border-color: var(--verde-claro); color: var(--verde-claro); }
+
+.btn-next {
+  background: var(--verde-claro);
+  color: var(--verde-escuro);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-next:hover { background: #00E060; }
+.btn-next:disabled { background: var(--borda); color: var(--cinza-texto); cursor: not-allowed; }
+
+/* RESULTS PAGE */
+.results-section {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.results-section.active { display: block; }
+
+.result-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.result-emoji { font-size: 48px; margin-bottom: 12px; }
+.result-title { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+.result-desc { font-size: 14px; color: var(--cinza-texto); }
+
+.results-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.result-card {
+  background: var(--verde-card);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: var(--transition);
+}
+.result-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+.result-card.best {
+  border-color: var(--verde-claro);
+  box-shadow: 0 0 0 1px var(--verde-claro);
+}
+
+.result-card.cost {
+  border-color: var(--dourado);
+  box-shadow: 0 0 0 1px var(--dourado);
+}
+
+.result-ribbon {
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+.result-ribbon.best { background: var(--verde-claro); color: var(--verde-escuro); }
+.result-ribbon.cost { background: var(--dourado); color: #1A1A00; }
+.result-ribbon.alt { background: var(--borda); color: var(--cinza-medio); }
+
+.reason-box {
+  margin: 10px 14px;
+  background: rgba(0,200,84,0.06);
+  border-left: 3px solid var(--verde-claro);
+  padding: 8px 10px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 11px;
+  color: var(--cinza-medio);
+  line-height: 1.5;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--cinza-texto);
+}
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--cinza-medio); }
+.empty-desc { font-size: 13px; }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: var(--verde-card);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius);
+  max-width: 680px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.22s ease;
+}
+
+.modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--borda);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.modal-title { font-size: 20px; font-weight: 800; }
+.modal-tipo { font-size: 12px; color: var(--cinza-texto); margin-top: 2px; }
+
+.btn-close {
+  background: none;
+  border: none;
+  color: var(--cinza-texto);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+  transition: var(--transition);
+}
+.btn-close:hover { color: var(--vermelho); }
+
+.modal-body { padding: 20px 24px; }
+
+.spec-table { width: 100%; border-collapse: collapse; }
+.spec-table tr { border-bottom: 1px solid var(--borda); }
+.spec-table tr:last-child { border-bottom: none; }
+.spec-table td {
+  padding: 9px 4px;
+  font-size: 13px;
+}
+.spec-table td:first-child {
+  color: var(--cinza-texto);
+  width: 55%;
+  font-weight: 500;
+}
+.spec-table td:last-child { font-weight: 700; color: var(--branco); }
+
+/* TOOLTIP */
+[data-tip] { position: relative; cursor: help; }
+[data-tip]:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1A1A2E;
+  color: white;
+  padding: 5px 9px;
+  border-radius: 5px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 99;
+  pointer-events: none;
+  box-shadow: var(--shadow);
+}
+
+/* PRINT */
+@media print {
+  .sidebar, .header, .tabs-nav, .card-footer, .comparator-header .btn-export { display: none; }
+  .main { grid-template-columns: 1fr; }
+  body { background: white; color: black; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .main { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--borda);
+  }
+  .comparator-table { min-width: 600px; }
+}
+@media (max-width: 600px) {
+  .products-grid { grid-template-columns: 1fr; }
+  .config-options { grid-template-columns: 1fr 1fr; }
+  .tabs-nav { overflow-x: auto; }
+  .tab-btn { white-space: nowrap; }
+}
+</style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body>
 
-    <!-- Chosen Palette: Intelbras Tech (Greens, Grays, White) + Warm Neutrals for background -->
-    <!-- Application Structure Plan: 
-         1. Header: Branding and Navigation.
-         2. Fundamentals Module: Educational section on physics (Impedance/Attenuation) with Chart.js.
-         3. Hardware Lab: Interactive catalogue for Cables and Connectors.
-         4. Project Calculator: Logic engine for distance/protocol/balun selection.
-         5. Use Cases: Scenario-based recommendations.
-         6. Deep Dive: Technical FAQ/Analysis.
-         Designed to move from Theory -> Components -> Application -> Critical Thinking.
-    -->
-    <!-- Visualization & Content Choices:
-         - Attenuation Chart: Chart.js Line chart to compare Coax vs UTP attenuation over distance. Goal: Inform/Compare.
-         - Cable Cross-section: CSS styled concentric divs. Goal: Inform/Visualize Structure.
-         - Calculator: JS Logic to filter Intelbras specs (HDCVI distances). Goal: Utility/Planning.
-         - FAQ Accordion: JS toggle. Goal: Deep Learning.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-text">intelbras</div>
+    <div class="logo-badge">Gravadores</div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-icon" id="toggleTheme" title="Alternar tema" onclick="toggleTheme()">🌙</button>
+    <button class="compare-badge" id="compareBadge" onclick="showTab('comparar')" style="display:none">
+      ⚖️ Comparar <span class="count" id="compareCount">0</span>
+    </button>
+  </div>
+</header>
 
-    <!-- Navigation -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center gap-2">
-                        <div class="h-8 w-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">I</div>
-                        <span class="font-bold text-xl tracking-tight text-gray-800">TechGuide <span class="text-green-600">Cabling</span></span>
-                    </div>
-                </div>
-                <div class="hidden md:flex space-x-8 items-center">
-                    <button onclick="navTo('fundamentals')" class="text-gray-600 hover:text-green-600 px-3 py-2 text-sm font-medium">Fundamentos</button>
-                    <button onclick="navTo('hardware')" class="text-gray-600 hover:text-green-600 px-3 py-2 text-sm font-medium">Cabos e Conectores</button>
-                    <button onclick="navTo('calculator')" class="text-gray-600 hover:text-green-600 px-3 py-2 text-sm font-medium">Calculadora de Projeto</button>
-                    <button onclick="navTo('scenarios')" class="text-gray-600 hover:text-green-600 px-3 py-2 text-sm font-medium">Cenários Reais</button>
-                    <button onclick="navTo('faq')" class="text-gray-600 hover:text-green-600 px-3 py-2 text-sm font-medium">Análise Crítica</button>
-                </div>
-                <!-- Mobile menu button placeholder -->
-                <div class="flex items-center md:hidden">
-                    <button class="text-gray-600 hover:text-green-600 p-2">Menu</button>
-                </div>
-            </div>
+<nav class="tabs-nav">
+  <button class="tab-btn active" data-tab="catalogo" onclick="showTab('catalogo')">
+    <span class="tab-icon">📋</span> Catálogo
+  </button>
+  <button class="tab-btn" data-tab="descobrir" onclick="showTab('descobrir')">
+    <span class="tab-icon">🧭</span> Descobrir
+  </button>
+  <button class="tab-btn" data-tab="comparar" onclick="showTab('comparar')">
+    <span class="tab-icon">⚖️</span> Comparar
+  </button>
+</nav>
+
+<!-- TAB: CATÁLOGO -->
+<div id="tab-catalogo" class="main">
+  <aside class="sidebar">
+    <div class="sidebar-title">Filtros</div>
+
+    <div class="filter-group">
+      <div class="filter-label">🔍 Busca</div>
+      <input type="text" class="search-box" id="searchInput" placeholder="Nome do modelo..." oninput="aplicarFiltros()">
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">📡 Tipo</div>
+      <div class="chip-group" id="filterTipo">
+        <div class="chip active" data-value="todos" onclick="toggleChip(this,'tipo')">Todos</div>
+        <div class="chip" data-value="DVR" onclick="toggleChip(this,'tipo')">DVR</div>
+        <div class="chip" data-value="NVR" onclick="toggleChip(this,'tipo')">NVR</div>
+        <div class="chip" data-value="iMHDX" onclick="toggleChip(this,'tipo')">iMHDX</div>
+        <div class="chip" data-value="iNVD" onclick="toggleChip(this,'tipo')">iNVD</div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">📹 Canais Analógicos</div>
+      <div class="chip-group" id="filterCanais">
+        <div class="chip active" data-value="0" onclick="toggleChip(this,'canais')">Todos</div>
+        <div class="chip" data-value="4" onclick="toggleChip(this,'canais')">4ch</div>
+        <div class="chip" data-value="8" onclick="toggleChip(this,'canais')">8ch</div>
+        <div class="chip" data-value="16" onclick="toggleChip(this,'canais')">16ch</div>
+        <div class="chip" data-value="32" onclick="toggleChip(this,'canais')">32ch</div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">🌐 Expansão IP</div>
+      <div class="toggle-row">
+        <span class="toggle-label" data-tip="Canais IP extras além dos analógicos">Com expansão IP extra</span>
+        <button class="toggle" id="toggleIP" onclick="toggleFilter('ip')"></button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">🤖 Inteligência Artificial</div>
+      <div class="toggle-row">
+        <span class="toggle-label">Com IA</span>
+        <button class="toggle" id="toggleIA" onclick="toggleFilter('ia')"></button>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Reconhecimento facial</span>
+        <button class="toggle" id="toggleFace" onclick="toggleFilter('face')"></button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">📡 Portas PoE</div>
+      <div class="toggle-row">
+        <span class="toggle-label">Com PoE</span>
+        <button class="toggle" id="togglePoE" onclick="toggleFilter('poe')"></button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">💾 Resolução Máxima</div>
+      <div class="chip-group" id="filterResolucao">
+        <div class="chip active" data-value="todos" onclick="toggleChip(this,'resolucao')">Todos</div>
+        <div class="chip" data-value="1080p" onclick="toggleChip(this,'resolucao')">1080p</div>
+        <div class="chip" data-value="5MP" onclick="toggleChip(this,'resolucao')">5MP</div>
+        <div class="chip" data-value="4K" onclick="toggleChip(this,'resolucao')">4K</div>
+        <div class="chip" data-value="12MP" onclick="toggleChip(this,'resolucao')">12MP+</div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">📊 Status</div>
+      <div class="chip-group" id="filterStatus">
+        <div class="chip active" data-value="todos" onclick="toggleChip(this,'status')">Todos</div>
+        <div class="chip" data-value="Em linha" onclick="toggleChip(this,'status')">Em linha</div>
+        <div class="chip" data-value="Phase In" onclick="toggleChip(this,'status')">Phase In</div>
+      </div>
+    </div>
+
+    <div id="resultsCount" class="results-count"><strong>0</strong> modelos encontrados</div>
+    <button class="btn-clear" onclick="limparFiltros()">✕ Limpar filtros</button>
+  </aside>
+
+  <div class="content" id="catalogoContent">
+    <div class="sort-bar">
+      <span class="sort-label">Ordenar por:</span>
+      <select class="sort-select" id="sortSelect" onchange="aplicarFiltros()">
+        <option value="nome">Nome</option>
+        <option value="canais">Canais</option>
+        <option value="canaisIP">Expansão IP</option>
+        <option value="resolucao">Resolução</option>
+      </select>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+</div>
+
+<!-- TAB: DESCOBRIR -->
+<div id="tab-descobrir" class="configurator-wrap" style="display:none">
+  <div class="config-progress" id="configProgress"></div>
+
+  <!-- Step 1 -->
+  <div class="config-step active" data-step="1">
+    <div class="config-question">Quantas câmeras você precisa?</div>
+    <div class="config-subtitle">Selecione a faixa mais próxima da sua necessidade</div>
+    <div class="config-options">
+      <div class="config-option" data-key="cameras" data-value="4" onclick="selectOption(this)">
+        <div class="config-option-icon">📹</div>
+        <div class="config-option-label">Até 4</div>
+        <div class="config-option-sub">Residencial</div>
+      </div>
+      <div class="config-option" data-key="cameras" data-value="8" onclick="selectOption(this)">
+        <div class="config-option-icon">📹📹</div>
+        <div class="config-option-label">Até 8</div>
+        <div class="config-option-sub">Pequeno comércio</div>
+      </div>
+      <div class="config-option" data-key="cameras" data-value="16" onclick="selectOption(this)">
+        <div class="config-option-icon">🎥</div>
+        <div class="config-option-label">Até 16</div>
+        <div class="config-option-sub">Médio porte</div>
+      </div>
+      <div class="config-option" data-key="cameras" data-value="32" onclick="selectOption(this)">
+        <div class="config-option-icon">🏭</div>
+        <div class="config-option-label">Até 32+</div>
+        <div class="config-option-sub">Grande porte</div>
+      </div>
+    </div>
+    <div class="config-nav">
+      <button class="btn-next" onclick="nextStep()" disabled id="nextBtn1">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="config-step" data-step="2">
+    <div class="config-question">Usará câmeras IP?</div>
+    <div class="config-subtitle">Câmeras IP oferecem maior resolução e flexibilidade na instalação</div>
+    <div class="config-options">
+      <div class="config-option" data-key="usaIP" data-value="nao" onclick="selectOption(this)">
+        <div class="config-option-icon">📡</div>
+        <div class="config-option-label">Não</div>
+        <div class="config-option-sub">Apenas analógicas</div>
+      </div>
+      <div class="config-option" data-key="usaIP" data-value="algumas" onclick="selectOption(this)">
+        <div class="config-option-icon">🔀</div>
+        <div class="config-option-label">Algumas</div>
+        <div class="config-option-sub">Híbrido</div>
+      </div>
+      <div class="config-option" data-key="usaIP" data-value="todas" onclick="selectOption(this)">
+        <div class="config-option-icon">🌐</div>
+        <div class="config-option-label">Somente IP</div>
+        <div class="config-option-sub">Rede pura</div>
+      </div>
+    </div>
+    <div class="config-nav">
+      <button class="btn-back" onclick="prevStep()">← Voltar</button>
+      <button class="btn-next" onclick="nextStep()" disabled id="nextBtn2">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="config-step" data-step="3">
+    <div class="config-question">Precisa de Inteligência Artificial?</div>
+    <div class="config-subtitle">IA permite detecção de pessoas, veículos, reconhecimento facial e mais</div>
+    <div class="config-options">
+      <div class="config-option" data-key="ia" data-value="nao" onclick="selectOption(this)">
+        <div class="config-option-icon">🎯</div>
+        <div class="config-option-label">Não</div>
+        <div class="config-option-sub">Gravação básica</div>
+      </div>
+      <div class="config-option" data-key="ia" data-value="basica" onclick="selectOption(this)">
+        <div class="config-option-icon">🤖</div>
+        <div class="config-option-label">IA Básica</div>
+        <div class="config-option-sub">Pessoas/Veículos</div>
+      </div>
+      <div class="config-option" data-key="ia" data-value="avancada" onclick="selectOption(this)">
+        <div class="config-option-icon">🧠</div>
+        <div class="config-option-label">IA Avançada</div>
+        <div class="config-option-sub">Facial, Placas</div>
+      </div>
+    </div>
+    <div class="config-nav">
+      <button class="btn-back" onclick="prevStep()">← Voltar</button>
+      <button class="btn-next" onclick="nextStep()" disabled id="nextBtn3">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="config-step" data-step="4">
+    <div class="config-question">Qual nível de resolução?</div>
+    <div class="config-subtitle">Maior resolução = mais detalhes, mas requer mais espaço em disco</div>
+    <div class="config-options">
+      <div class="config-option" data-key="resolucao" data-value="hd" onclick="selectOption(this)">
+        <div class="config-option-icon">📺</div>
+        <div class="config-option-label">HD / Full HD</div>
+        <div class="config-option-sub">720p / 1080p</div>
+      </div>
+      <div class="config-option" data-key="resolucao" data-value="5mp" onclick="selectOption(this)">
+        <div class="config-option-icon">🔍</div>
+        <div class="config-option-label">5MP</div>
+        <div class="config-option-sub">Alta definição</div>
+      </div>
+      <div class="config-option" data-key="resolucao" data-value="4k" onclick="selectOption(this)">
+        <div class="config-option-icon">⚡</div>
+        <div class="config-option-label">4K / 8MP+</div>
+        <div class="config-option-sub">Ultra HD</div>
+      </div>
+    </div>
+    <div class="config-nav">
+      <button class="btn-back" onclick="prevStep()">← Voltar</button>
+      <button class="btn-next" onclick="calcularRecomendacao()" disabled id="nextBtn4">Ver Recomendações →</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="results-section" id="configResults">
+    <div class="result-header">
+      <div class="result-emoji">🎯</div>
+      <div class="result-title">Recomendações para você</div>
+      <div class="result-desc" id="resultDesc"></div>
+    </div>
+    <div class="results-cards" id="resultCards"></div>
+    <div style="text-align:center;margin-top:24px">
+      <button class="btn-back" onclick="reiniciarConfigurador()">↺ Recomeçar</button>
+      <button class="btn-next" style="margin-left:10px" onclick="showTab('catalogo')">Ver Catálogo Completo</button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: COMPARAR -->
+<div id="tab-comparar" class="comparator-panel" style="display:none">
+  <div class="comparator-header">
+    <div class="comparator-title">
+      ⚖️ Comparador
+      <span id="compareSubtitle" style="font-size:13px;font-weight:400;color:var(--cinza-texto)">Selecione até 4 modelos no catálogo</span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-export" onclick="exportarComparacao()">🖨️ Imprimir / PDF</button>
+      <button class="btn-back" onclick="limparComparacao()">✕ Limpar</button>
+    </div>
+  </div>
+  <div class="comparator-table-wrap">
+    <div id="comparatorContent"></div>
+  </div>
+</div>
+
+<!-- MODAL DETALHES -->
+<div class="modal-overlay" id="modalOverlay" onclick="fecharModal(event)">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+// ============================================================
+// DADOS DOS PRODUTOS
+// ============================================================
+const produtos = [
+  // ── DVR 04 CANAIS ──────────────────────────────────────
+  { nome:'MHDX 1104-C', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:4, canaisIPAdicionais:1, canaisIPTotal:5, modoNVR:5, resolucaoMax:'2MP (1080p)', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:20, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI e IP' },
+  { nome:'MHDX 1304', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:4, canaisIPAdicionais:1, canaisIPTotal:5, modoNVR:5, resolucaoMax:'2MP (1080p)', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:32, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'MHDX 3104-C', tipo:'DVR', linhaFamilia:'MHDX 3xxx', canais:4, canaisIPAdicionais:1, canaisIPTotal:5, modoNVR:5, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:32, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'MHDX 1004-C', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:4, canaisIPAdicionais:1, canaisIPTotal:5, modoNVR:5, resolucaoMax:'2MP (1080p)', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:20, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI e IP' },
+  { nome:'MHDX 3004-C', tipo:'DVR', linhaFamilia:'MHDX 3xxx', canais:4, canaisIPAdicionais:2, canaisIPTotal:6, modoNVR:6, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:32, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+
+  // ── DVR 08 CANAIS ──────────────────────────────────────
+  { nome:'MHDX 1108-C', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:8, canaisIPAdicionais:2, canaisIPTotal:10, modoNVR:10, resolucaoMax:'2MP/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:40, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI e IP' },
+  { nome:'MHDX 1308', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:8, canaisIPAdicionais:2, canaisIPTotal:10, modoNVR:10, resolucaoMax:'2MP/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:32, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'MHDX 3108-C', tipo:'DVR', linhaFamilia:'MHDX 3xxx', canais:8, canaisIPAdicionais:4, canaisIPTotal:12, modoNVR:12, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:true, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:64, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'iMHDX 3108', tipo:'iMHDX', linhaFamilia:'iMHDX 3xxx', canais:8, canaisIPAdicionais:4, canaisIPTotal:18, modoNVR:12, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'iMHDX 5108', tipo:'iMHDX', linhaFamilia:'iMHDX 5xxx', canais:8, canaisIPAdicionais:8, canaisIPTotal:16, modoNVR:16, resolucaoMax:'4K (8MP)', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:18, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'MHDX 1008-C', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:8, canaisIPAdicionais:2, canaisIPTotal:10, modoNVR:10, resolucaoMax:'2MP/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:40, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI e IP' },
+  { nome:'MHDX 3008-C', tipo:'DVR', linhaFamilia:'MHDX 3xxx', canais:8, canaisIPAdicionais:4, canaisIPTotal:12, modoNVR:12, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:48, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'iMHDX 3008', tipo:'iMHDX', linhaFamilia:'iMHDX 3xxx', canais:8, canaisIPAdicionais:4, canaisIPTotal:12, modoNVR:12, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:64, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+
+  // ── DVR 16 CANAIS ──────────────────────────────────────
+  { nome:'MHDX 1116-C', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:16, canaisIPAdicionais:2, canaisIPTotal:18, modoNVR:18, resolucaoMax:'1080p/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:64, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'MHDX 1316', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:16, canaisIPAdicionais:2, canaisIPTotal:18, modoNVR:18, resolucaoMax:'2MP/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:64, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'MHDX 3116-C', tipo:'DVR', linhaFamilia:'MHDX 3xxx', canais:16, canaisIPAdicionais:8, canaisIPTotal:24, modoNVR:24, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'iMHDX 3116', tipo:'iMHDX', linhaFamilia:'iMHDX 3xxx', canais:16, canaisIPAdicionais:8, canaisIPTotal:24, modoNVR:24, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'iMHDX 5116', tipo:'iMHDX', linhaFamilia:'iMHDX 5xxx', canais:16, canaisIPAdicionais:16, canaisIPTotal:32, modoNVR:32, resolucaoMax:'4K (8MP)', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:18, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'iMHDX 7016', tipo:'iMHDX', linhaFamilia:'iMHDX 7xxx', canais:16, canaisIPAdicionais:8, canaisIPTotal:24, modoNVR:24, resolucaoMax:'5MP/4K IP', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:4, capacidadeMaxHD:22, portas:2, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+
+  // ── DVR 32 CANAIS ──────────────────────────────────────
+  { nome:'MHDX 1232', tipo:'DVR', linhaFamilia:'MHDX 1xxx', canais:32, canaisIPAdicionais:16, canaisIPTotal:16, modoNVR:16, resolucaoMax:'2MP/6MP IP', resolucaoNivel:'hd', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'iMHDX 3132', tipo:'iMHDX', linhaFamilia:'iMHDX 3xxx', canais:32, canaisIPAdicionais:8, canaisIPTotal:40, modoNVR:40, resolucaoMax:'5MP/6MP IP', resolucaoNivel:'5mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Em linha', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+  { nome:'iMHDX 7032', tipo:'iMHDX', linhaFamilia:'iMHDX 7xxx', canais:32, canaisIPAdicionais:0, canaisIPTotal:32, modoNVR:32, resolucaoMax:'5MP/4K IP', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:true, compressao:'H.265+', compatívelSSD:false, hdsSuportados:4, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:128, portesPOE:0, status:'Descontinuado', tecnologias:'HDCVI, AHD, HDTVI, Analógico (CVBS) e IP' },
+
+  // ── NVR 04 CANAIS ──────────────────────────────────────
+  { nome:'NVD 1404', tipo:'NVR', linhaFamilia:'NVD 14xx', canais:4, canaisIPAdicionais:0, canaisIPTotal:4, modoNVR:4, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:false, iaBasica:false, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:88, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
+  { nome:'NVD 1404-P', tipo:'NVR', linhaFamilia:'NVD 14xx', canais:4, canaisIPAdicionais:0, canaisIPTotal:4, modoNVR:4, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:false, iaBasica:false, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:88, portesPOE:4, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
+
+  // ── NVR 08 CANAIS ──────────────────────────────────────
+  { nome:'NVD 1408', tipo:'NVR', linhaFamilia:'NVD 14xx', canais:8, canaisIPAdicionais:0, canaisIPTotal:8, modoNVR:8, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:false, iaBasica:false, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:88, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
+  { nome:'NVD 1408-P', tipo:'NVR', linhaFamilia:'NVD 14xx', canais:8, canaisIPAdicionais:0, canaisIPTotal:8, modoNVR:8, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:false, iaBasica:false, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100', throughput:88, portesPOE:8, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
+  { nome:'NVD 3308-P', tipo:'NVR', linhaFamilia:'NVD 33xx', canais:8, canaisIPAdicionais:0, canaisIPTotal:8, modoNVR:8, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100', throughput:140, portesPOE:8, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
+
+  // ── NVR 16 CANAIS ──────────────────────────────────────
+  { nome:'NVD 1516', tipo:'NVR', linhaFamilia:'NVD 15xx', canais:16, canaisIPAdicionais:0, canaisIPTotal:16, modoNVR:16, resolucaoMax:'12MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100/1000', throughput:144, portesPOE:0, status:'Phase In', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
+  { nome:'iNVD 1016', tipo:'iNVD', linhaFamilia:'iNVD 10xx', canais:16, canaisIPAdicionais:0, canaisIPTotal:16, modoNVR:16, resolucaoMax:'12MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:1, capacidadeMaxHD:14, portas:1, portasVelocidade:'10/100/1000', throughput:144, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
+  { nome:'NVD 3316-P', tipo:'NVR', linhaFamilia:'NVD 33xx', canais:16, canaisIPAdicionais:0, canaisIPTotal:16, modoNVR:16, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:true, iaBasica:true, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100/1000', throughput:160, portesPOE:16, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
+  { nome:'iNVD 3016-P', tipo:'iNVD', linhaFamilia:'iNVD 30xx', canais:16, canaisIPAdicionais:0, canaisIPTotal:16, modoNVR:16, resolucaoMax:'16MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:256, portesPOE:16, status:'Phase In', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
+  { nome:'iNVD 3016', tipo:'iNVD', linhaFamilia:'iNVD 30xx', canais:16, canaisIPAdicionais:0, canaisIPTotal:16, modoNVR:16, resolucaoMax:'16MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:165, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
+
+  // ── NVR 32 CANAIS ──────────────────────────────────────
+  { nome:'NVD 1432', tipo:'NVR', linhaFamilia:'NVD 14xx', canais:32, canaisIPAdicionais:0, canaisIPTotal:32, modoNVR:32, resolucaoMax:'8MP (4K)', resolucaoNivel:'4k', inteligenciaArtificial:false, iaBasica:false, iaAvancada:false, reconhecimentoFacial:false, linhaECercaVirtual:false, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:22, portas:1, portasVelocidade:'10/100/1000', throughput:120, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S' },
+  { nome:'iNVD 3032', tipo:'iNVD', linhaFamilia:'iNVD 30xx', canais:32, canaisIPAdicionais:0, canaisIPTotal:32, modoNVR:32, resolucaoMax:'16MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:2, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:256, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
+  { nome:'iNVD 5232', tipo:'iNVD', linhaFamilia:'iNVD 52xx', canais:32, canaisIPAdicionais:0, canaisIPTotal:32, modoNVR:32, resolucaoMax:'16MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:8, capacidadeMaxHD:24, portas:2, portasVelocidade:'10/100/1000', throughput:165, portesPOE:0, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
+  { nome:'iNVD 5232-16P', tipo:'iNVD', linhaFamilia:'iNVD 52xx', canais:32, canaisIPAdicionais:0, canaisIPTotal:32, modoNVR:32, resolucaoMax:'16MP', resolucaoNivel:'12mp', inteligenciaArtificial:true, iaBasica:true, iaAvancada:true, reconhecimentoFacial:true, linhaECercaVirtual:true, funcaoPOS:false, compressao:'H.265+', compatívelSSD:false, hdsSuportados:4, capacidadeMaxHD:24, portas:1, portasVelocidade:'10/100/1000', throughput:165, portesPOE:16, status:'Em linha', tecnologias:'INTELBRAS-1 e ONVIF Perfil S, T e G' },
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let filtros = { tipo:'todos', canais:0, ip:false, ia:false, face:false, poe:false, resolucao:'todos', status:'todos', busca:'' };
+let comparacao = [];
+let tabAtual = 'catalogo';
+let configStep = 1;
+let configAnswers = {};
+const totalSteps = 4;
+
+// ============================================================
+// ICONS SVG
+// ============================================================
+function getDeviceIcon(tipo, canais) {
+  const c = canais <= 8 ? '#4a9e6e' : '#3a8a5e';
+  return `<svg class="device-icon" viewBox="0 0 56 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="6" width="52" height="26" rx="3" fill="${c}" opacity="0.3" stroke="${c}" stroke-width="1"/>
+    <rect x="2" y="6" width="52" height="5" rx="2" fill="${c}" opacity="0.5"/>
+    <rect x="6" y="15" width="8" height="8" rx="1" fill="${c}" opacity="0.6"/>
+    <rect x="18" y="15" width="8" height="8" rx="1" fill="${c}" opacity="0.6"/>
+    <rect x="30" y="15" width="8" height="8" rx="1" fill="${c}" opacity="0.6"/>
+    <rect x="42" y="15" width="8" height="8" rx="1" fill="${c}" opacity="0.6"/>
+    <circle cx="46" cy="9.5" r="1.5" fill="${tipo.includes('NVR') || tipo.includes('iNVD') ? '#2196F3' : '#00C854'}"/>
+    <circle cx="50" cy="9.5" r="1.5" fill="#00C854"/>
+    ${canais >= 8 ? `<text x="28" y="31" text-anchor="middle" fill="${c}" font-size="7" font-weight="bold">${canais}ch</text>` : ''}
+  </svg>`;
+}
+
+// ============================================================
+// RENDER PRODUCTS
+// ============================================================
+function renderizarProdutos(lista) {
+  const grid = document.getElementById('productsGrid');
+  document.getElementById('resultsCount').innerHTML = `<strong>${lista.length}</strong> modelos encontrados`;
+
+  if (!lista.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">Nenhum modelo encontrado</div>
+      <div class="empty-desc">Tente ajustar os filtros</div>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = lista.map(p => {
+    const isInCompare = comparacao.some(c => c.nome === p.nome);
+    const isDiscontinued = p.status === 'Descontinuado';
+    const tipoClass = (p.tipo === 'NVR' || p.tipo === 'iNVD') ? 'nvr' : p.tipo === 'iMHDX' ? 'imhdx' : '';
+    const statusClass = isDiscontinued ? 'discontinued' : p.status === 'Phase In' ? 'phase-in' : 'active';
+    const statusText = isDiscontinued ? '⚠ Descontinuado' : p.status === 'Phase In' ? '↗ Phase In' : '✓ Em linha';
+
+    return `<div class="product-card${isDiscontinued ? ' discontinued' : ''}${isInCompare ? ' in-compare' : ''}" onclick="verDetalhes('${p.nome}')">
+      <div class="status-badge ${statusClass}">${statusText}</div>
+      <div class="card-header">
+        <div class="card-img-wrap">${getDeviceIcon(p.tipo, p.canais)}</div>
+        <div class="card-title-area">
+          <div class="card-model">${p.nome}</div>
+          <div class="card-tipo ${tipoClass}">${p.tipo}</div>
         </div>
-    </nav>
+      </div>
+      <div class="card-body">
+        <div class="card-stat">
+          <div class="card-stat-label">Canais Analógicos</div>
+          <div class="card-stat-value">${p.canais}ch</div>
+        </div>
+        <div class="card-stat">
+          <div class="card-stat-label">Modo NVR</div>
+          <div class="card-stat-value">${p.modoNVR > 0 ? p.modoNVR + ' IP' : '—'}</div>
+        </div>
+        ${p.canaisIPAdicionais > 0 || p.tipo === 'NVR' || p.tipo === 'iNVD' ? `
+        <div class="card-ip-expansion">
+          <span class="ip-icon">🌐</span>
+          <div>
+            <div class="ip-label">${(p.tipo === 'NVR' || p.tipo === 'iNVD') ? 'Canais IP' : 'Expansão IP'}</div>
+            <div class="ip-value">${p.canaisIPTotal} canais IP total</div>
+          </div>
+        </div>` : ''}
+        <div class="card-stat">
+          <div class="card-stat-label">Resolução Máx.</div>
+          <div class="card-stat-value" style="font-size:11px">${p.resolucaoMax}</div>
+        </div>
+        <div class="card-stat">
+          <div class="card-stat-label">Throughput</div>
+          <div class="card-stat-value">${p.throughput} Mbps</div>
+        </div>
+        <div class="card-stat">
+          <div class="card-stat-label">HDs suportados</div>
+          <div class="card-stat-value">${p.hdsSuportados} × ${p.capacidadeMaxHD}TB</div>
+        </div>
+        <div class="card-stat">
+          <div class="card-stat-label">IA</div>
+          <div class="card-stat-value">
+            ${p.reconhecimentoFacial ? '<span class="ai-badge full">IA Completa 🧠</span>' :
+              p.inteligenciaArtificial ? '<span class="ai-badge">IA Básica 🤖</span>' :
+              '<span style="color:var(--cinza-texto);font-size:12px">—</span>'}
+          </div>
+        </div>
+        <div class="card-stat">
+          <div class="card-stat-label">PoE</div>
+          <div class="card-stat-value">${p.portesPOE > 0 ? p.portesPOE + ' portas' : '—'}</div>
+        </div>
+      </div>
+      <div class="card-footer" onclick="event.stopPropagation()">
+        <button class="btn-secondary${isInCompare ? ' added' : ''}"
+          onclick="toggleComparacao('${p.nome}')"
+          ${!isInCompare && comparacao.length >= 4 ? 'disabled style="opacity:.4;cursor:not-allowed"' : ''}>
+          ${isInCompare ? '✓ Na comparação' : '+ Comparar'}
+        </button>
+        <button class="btn-primary" onclick="verDetalhes('${p.nome}')">Ver detalhes</button>
+      </div>
+    </div>`;
+  }).join('');
+}
 
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+// ============================================================
+// FILTERS
+// ============================================================
+function aplicarFiltros() {
+  filtros.busca = document.getElementById('searchInput').value.toLowerCase();
+  const sort = document.getElementById('sortSelect').value;
 
-        <!-- Header Section -->
-        <header class="text-center space-y-4">
-            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Guia Técnico de Infraestrutura CFTV e Alarmes</h1>
-            <p class="max-w-2xl mx-auto text-xl text-gray-500">
-                Uma referência técnica interativa para especificações elétricas, protocolos de transmissão e boas práticas com foco em soluções Intelbras.
-            </p>
-        </header>
+  let lista = produtos.filter(p => {
+    if (filtros.busca && !p.nome.toLowerCase().includes(filtros.busca)) return false;
+    if (filtros.tipo !== 'todos' && p.tipo !== filtros.tipo) return false;
+    if (filtros.canais > 0 && p.canais !== filtros.canais) return false;
+    if (filtros.ip && p.canaisIPAdicionais <= 0 && p.tipo !== 'NVR' && p.tipo !== 'iNVD') return false;
+    if (filtros.ia && !p.inteligenciaArtificial) return false;
+    if (filtros.face && !p.reconhecimentoFacial) return false;
+    if (filtros.poe && p.portesPOE === 0) return false;
+    if (filtros.status !== 'todos' && p.status !== filtros.status) return false;
+    if (filtros.resolucao !== 'todos') {
+      const r = filtros.resolucao;
+      if (r === '1080p' && p.resolucaoNivel !== 'hd') return false;
+      if (r === '5MP' && !['5mp','4k','12mp'].includes(p.resolucaoNivel)) return false;
+      if (r === '4K' && !['4k','12mp'].includes(p.resolucaoNivel)) return false;
+      if (r === '12MP' && p.resolucaoNivel !== '12mp') return false;
+    }
+    return true;
+  });
 
-        <!-- SECTION 1: FUNDAMENTALS (PHYSICS) -->
-        <section id="fundamentals" class="bg-white rounded-lg shadow-lg overflow-hidden border-t-4 border-green-500">
-            <div class="p-6 border-b border-gray-200 bg-gray-50">
-                <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <span class="text-3xl text-green-600">&#9889;</span> Fundamentos Físicos da Transmissão
-                </h2>
-                <p class="mt-2 text-gray-600">Entenda como a física dos condutores afeta a integridade do sinal de vídeo e dados.</p>
-            </div>
-            
-            <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Text Content -->
-                <div class="space-y-6">
-                    <div class="bg-blue-50 p-4 rounded-md border-l-4 border-blue-500">
-                        <h3 class="font-bold text-blue-800">Por que a Impedância (Ω) Importa?</h3>
-                        <p class="text-sm text-blue-900 mt-1">
-                            A impedância característica não é uma resistência simples, mas a relação entre campo elétrico e magnético no cabo. Em CFTV, o padrão é <strong>75Ω</strong>. Se usar cabo de 50Ω (rádio) ou conectores ruins, ocorre o fenômeno de <strong>Reflexão de Sinal</strong> (VSWR), criando "fantasmas" na imagem e perda de potência.
-                        </p>
-                    </div>
+  lista.sort((a,b) => {
+    if (sort === 'nome') return a.nome.localeCompare(b.nome);
+    if (sort === 'canais') return a.canais - b.canais;
+    if (sort === 'canaisIP') return b.canaisIPTotal - a.canaisIPTotal;
+    if (sort === 'resolucao') {
+      const order = {hd:1,'5mp':2,'4k':3,'12mp':4};
+      return (order[b.resolucaoNivel]||0) - (order[a.resolucaoNivel]||0);
+    }
+    return 0;
+  });
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="p-4 border rounded hover:bg-gray-50 transition">
-                            <h4 class="font-bold text-gray-800">Capacitância</h4>
-                            <p class="text-xs text-gray-600 mt-1">Age como um filtro passa-baixa. Cabos ruins (alta capacitância) matam os detalhes finos (alta frequência) da imagem, deixando-a borrada.</p>
-                        </div>
-                        <div class="p-4 border rounded hover:bg-gray-50 transition">
-                            <h4 class="font-bold text-gray-800">Efeito Skin</h4>
-                            <p class="text-xs text-gray-600 mt-1">Em altas frequências (vídeo HD), a corrente flui apenas na superfície. Por isso, cabos de aço cobreado (CCS) funcionam, mas cobre puro é superior para alimentação (DC).</p>
-                        </div>
-                    </div>
-                </div>
+  renderizarProdutos(lista);
+}
 
-                <!-- Interactive Chart -->
-                <div class="flex flex-col items-center justify-center">
-                    <h3 class="text-lg font-semibold mb-2 text-gray-700">Atenuação do Sinal vs Distância (MHz)</h3>
-                    <div class="chart-container">
-                        <canvas id="attenuationChart"></canvas>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-2 text-center">Gráfico simulando a perda de sinal (dB) em 10MHz (sinal de vídeo base) para diferentes meios físicos.</p>
-                </div>
-            </div>
-        </section>
+function toggleChip(el, tipo) {
+  const group = el.parentElement;
+  const value = el.dataset.value;
+  group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  if (tipo === 'tipo') filtros.tipo = value;
+  else if (tipo === 'canais') filtros.canais = parseInt(value) || 0;
+  else if (tipo === 'resolucao') filtros.resolucao = value;
+  else if (tipo === 'status') filtros.status = value;
+  aplicarFiltros();
+}
 
-        <!-- SECTION 2: CABLE & CONNECTOR LAB -->
-        <section id="hardware" class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div class="p-6 border-b border-gray-200 bg-gray-50">
-                <h2 class="text-2xl font-bold text-gray-800">Laboratório de Hardware</h2>
-                <p class="mt-2 text-gray-600">Explore a composição interna dos cabos e os conectores adequados para cada aplicação.</p>
-            </div>
+function toggleFilter(tipo) {
+  const btn = document.getElementById('toggle' + tipo.charAt(0).toUpperCase() + tipo.slice(1));
+  const newState = !btn.classList.contains('on');
+  btn.classList.toggle('on', newState);
+  filtros[tipo] = newState;
+  aplicarFiltros();
+}
 
-            <div class="flex flex-col md:flex-row border-b border-gray-200">
-                <button onclick="selectCable('coax')" id="btn-coax" class="flex-1 py-4 text-center font-medium tab-active bg-gray-50 hover:bg-gray-100 transition">Cabo Coaxial (RG59/RG6)</button>
-                <button onclick="selectCable('utp')" id="btn-utp" class="flex-1 py-4 text-center font-medium tab-inactive hover:bg-gray-100 transition">Par Trançado (UTP)</button>
-                <button onclick="selectCable('alarm')" id="btn-alarm" class="flex-1 py-4 text-center font-medium tab-inactive hover:bg-gray-100 transition">Cabos de Alarme</button>
-            </div>
+// Fix toggle ID names
+function toggleFilter(tipo) {
+  const ids = { ip:'toggleIP', ia:'toggleIA', face:'toggleFace', poe:'togglePoE' };
+  const btn = document.getElementById(ids[tipo]);
+  const newState = !btn.classList.contains('on');
+  btn.classList.toggle('on', newState);
+  filtros[tipo] = newState;
+  aplicarFiltros();
+}
 
-            <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Visual Component (The Cable Construction) -->
-                <div class="md:col-span-1 flex flex-col items-center">
-                    <h3 class="font-bold text-lg mb-4 text-gray-700">Composição Física</h3>
-                    <!-- CSS Art for Cable Cross Section -->
-                    <div id="cable-visual" class="relative w-48 h-48 flex items-center justify-center">
-                        <!-- Dynamic Content injected via JS -->
-                    </div>
-                    <div id="cable-legend" class="mt-4 text-sm text-gray-600 space-y-1 w-full px-4">
-                        <!-- Legend injected via JS -->
-                    </div>
-                </div>
+function limparFiltros() {
+  filtros = { tipo:'todos', canais:0, ip:false, ia:false, face:false, poe:false, resolucao:'todos', status:'todos', busca:'' };
+  document.getElementById('searchInput').value = '';
+  document.getElementById('sortSelect').value = 'nome';
+  ['toggleIP','toggleIA','toggleFace','togglePoE'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('on');
+  });
+  ['filterTipo','filterCanais','filterResolucao','filterStatus'].forEach(id => {
+    const group = document.getElementById(id);
+    if (group) {
+      group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      const first = group.querySelector('.chip');
+      if (first) first.classList.add('active');
+    }
+  });
+  aplicarFiltros();
+}
 
-                <!-- Specs & Info -->
-                <div class="md:col-span-2 space-y-6">
-                    <div id="cable-details">
-                        <!-- Content injected via JS -->
-                    </div>
+// ============================================================
+// COMPARACAO
+// ============================================================
+function toggleComparacao(nome) {
+  const idx = comparacao.findIndex(p => p.nome === nome);
+  if (idx >= 0) {
+    comparacao.splice(idx, 1);
+  } else if (comparacao.length < 4) {
+    const p = produtos.find(x => x.nome === nome);
+    if (p) comparacao.push(p);
+  }
+  atualizarCompareBadge();
+  aplicarFiltros();
+  renderizarComparador();
+}
 
-                    <!-- Connectors Subsection -->
-                    <div class="bg-green-50 rounded-lg p-5 border border-green-100">
-                        <h4 class="font-bold text-green-800 mb-3">Conectores Intelbras Recomendados</h4>
-                        <div id="connector-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- Connectors injected via JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+function limparComparacao() {
+  comparacao = [];
+  atualizarCompareBadge();
+  aplicarFiltros();
+  renderizarComparador();
+}
 
-        <!-- SECTION 3: BALUNS & CALCULATOR -->
-        <section id="calculator" class="bg-white rounded-lg shadow-lg overflow-hidden border-t-4 border-gray-800">
-            <div class="p-6 border-b border-gray-200 bg-gray-50">
-                <h2 class="text-2xl font-bold text-gray-800">Calculadora de Projeto e Baluns</h2>
-                <p class="mt-2 text-gray-600">Dimensione seu sistema HDCVI/Analógico ou IP. Descubra a distância máxima e o equipamento necessário.</p>
-            </div>
+function atualizarCompareBadge() {
+  const badge = document.getElementById('compareBadge');
+  const count = document.getElementById('compareCount');
+  if (comparacao.length > 0) {
+    badge.style.display = 'flex';
+    count.textContent = comparacao.length;
+  } else {
+    badge.style.display = 'none';
+  }
+}
 
-            <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                <!-- Input Panel -->
-                <div class="lg:col-span-4 space-y-4 bg-gray-100 p-5 rounded-lg">
-                    <h3 class="font-bold text-lg text-gray-700 mb-2">Parâmetros do Link</h3>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Tecnologia/Protocolo</label>
-                        <select id="calc-tech" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:ring-green-500 focus:border-green-500">
-                            <option value="HDCVI">HDCVI (Intelbras)</option>
-                            <option value="AHD">AHD</option>
-                            <option value="TVI">HDTVI</option>
-                            <option value="Analog">Analógico (CVBS)</option>
-                            <option value="IP_POE">IP + PoE</option>
-                        </select>
-                    </div>
+function renderizarComparador() {
+  const content = document.getElementById('comparatorContent');
+  const subtitle = document.getElementById('compareSubtitle');
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Resolução</label>
-                        <select id="calc-res" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:ring-green-500 focus:border-green-500">
-                            <option value="720p">HD (720p)</option>
-                            <option value="1080p">Full HD (1080p)</option>
-                            <option value="4K">4K (2160p)</option>
-                        </select>
-                    </div>
+  if (comparacao.length === 0) {
+    subtitle.textContent = 'Selecione até 4 modelos no catálogo';
+    content.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">⚖️</div>
+      <div class="empty-title">Nenhum modelo selecionado</div>
+      <div class="empty-desc">Vá ao catálogo e clique em "+ Comparar" nos modelos desejados</div>
+    </div>`;
+    return;
+  }
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Infraestrutura (Cabo)</label>
-                        <select id="calc-cable" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:ring-green-500 focus:border-green-500">
-                            <option value="UTP_Cat5e">UTP Cat5e (Cobre puro)</option>
-                            <option value="UTP_Cat6">UTP Cat6</option>
-                            <option value="Coax_RG59">Coaxial RG59 (Malha 95%)</option>
-                            <option value="Coax_RG6">Coaxial RG6</option>
-                        </select>
-                    </div>
+  subtitle.textContent = `${comparacao.length} modelo${comparacao.length > 1 ? 's' : ''} selecionado${comparacao.length > 1 ? 's' : ''}`;
 
-                    <button onclick="calculateSystem()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition shadow">
-                        Calcular Viabilidade
-                    </button>
-                </div>
+  const specs = [
+    { key:'tipo', label:'Tipo', format: v => v },
+    { key:'canais', label:'Canais Analógicos', format: v => v + 'ch' },
+    { key:'canaisIPAdicionais', label:'🌐 Câmeras IP Adicionais', format: v => v > 0 ? v + ' câmeras' : '—', isIP:true },
+    { key:'canaisIPTotal', label:'🌐 Total IP (modo NVR)', format: v => v + ' câmeras', isIP:true },
+    { key:'modoNVR', label:'Modo NVR (só IP)', format: v => 'até ' + v + ' câmeras' },
+    { key:'resolucaoMax', label:'Resolução Máxima', format: v => v },
+    { key:'inteligenciaArtificial', label:'Inteligência Artificial', format: v => v ? '✓ Sim' : '✗ Não', isBool:true },
+    { key:'reconhecimentoFacial', label:'Reconhecimento Facial', format: v => v ? '✓ Sim' : '✗ Não', isBool:true },
+    { key:'linhaECercaVirtual', label:'Linha e Cerca Virtual', format: v => v ? '✓ Sim' : '✗ Não', isBool:true },
+    { key:'funcaoPOS', label:'Função POS', format: v => v ? '✓ Sim' : '✗ Não', isBool:true },
+    { key:'compressao', label:'Compressão', format: v => v },
+    { key:'compatívelSSD', label:'Compatível SSD', format: v => v ? '✓ Sim' : '✗ Não', isBool:true },
+    { key:'hdsSuportados', label:'HDs Suportados', format: v => v + ' unidade' + (v > 1 ? 's' : '') },
+    { key:'capacidadeMaxHD', label:'Capacidade Máx. por HD', format: v => v + ' TB' },
+    { key:'portesPOE', label:'Portas PoE', format: v => v > 0 ? v + ' portas' : '—' },
+    { key:'portas', label:'Portas Ethernet', format: v => v },
+    { key:'portasVelocidade', label:'Velocidade Ethernet', format: v => v + ' Mbps' },
+    { key:'throughput', label:'Throughput', format: v => v + ' Mbps' },
+    { key:'status', label:'Status', format: v => v },
+  ];
 
-                <!-- Result Panel -->
-                <div class="lg:col-span-8 space-y-6">
-                    <div id="calc-result" class="hidden h-full flex flex-col justify-between">
-                        
-                        <!-- Main Metrics -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div class="bg-gray-800 text-white p-4 rounded-lg shadow">
-                                <span class="text-sm text-gray-300">Distância Máxima Teórica</span>
-                                <div class="text-3xl font-bold text-green-400 mt-1" id="res-distance">--- m</div>
-                                <p class="text-xs text-gray-400 mt-2">Baseado em especificações de laboratório.</p>
-                            </div>
-                            <div class="bg-white border border-gray-200 p-4 rounded-lg shadow">
-                                <span class="text-sm text-gray-600 font-bold">Equipamento Sugerido</span>
-                                <div class="text-xl font-bold text-gray-800 mt-1" id="res-equipment">---</div>
-                                <p class="text-xs text-gray-500 mt-2" id="res-balun-desc">---</p>
-                            </div>
-                        </div>
+  // Detect differences
+  const isDiff = (key) => {
+    const vals = comparacao.map(p => p[key]);
+    return new Set(vals).size > 1;
+  };
+  const getBest = (key) => {
+    if (['throughput','hdsSuportados','capacidadeMaxHD','canaisIPTotal','modoNVR'].includes(key)) {
+      return Math.max(...comparacao.map(p => p[key]));
+    }
+    return null;
+  };
 
-                        <!-- Technical Explanation -->
-                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
-                            <h4 class="font-bold text-yellow-800 text-sm">Análise Técnica</h4>
-                            <p class="text-sm text-yellow-900 mt-1" id="res-analysis">
-                                Clique em calcular para ver a análise.
-                            </p>
-                        </div>
-                        
-                        <!-- Balun Info Box (Dynamic) -->
-                        <div id="balun-info-box" class="bg-white p-4 rounded border border-gray-200 mt-4 hidden">
-                            <h4 class="font-bold text-gray-800 border-b pb-2 mb-2">Entendendo a Solução: Balun</h4>
-                            <p class="text-sm text-gray-600 mb-2">
-                                <strong>O que é um Balun?</strong> É um transformador de impedância (Balanced-Unbalanced). Ele converte o sinal desequilibrado (coaxial, 75Ω) para equilibrado (UTP, 100Ω) e vice-versa.
-                            </p>
-                            <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1">
-                                <li><strong>Balun Passivo (XBP):</strong> Não precisa de energia. Ideal para distâncias curtas/médias.</li>
-                                <li><strong>Balun Ativo (XBA):</strong> Amplifica o sinal eletronicamente. Corrige atenuação de altas frequências em longas distâncias.</li>
-                                <li><strong>Power Balun (VBP):</strong> Envia vídeo e alimentação pelo mesmo cabo UTP (até 300m).</li>
-                            </ul>
-                        </div>
+  const cols = comparacao.map(p => `
+    <th class="compare-col-header">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div class="col-model-name">${p.nome}</div>
+          <div style="font-size:11px;color:var(--cinza-texto);margin-top:3px">${p.tipo} · ${p.canais}ch</div>
+        </div>
+        <button class="btn-remove-compare" onclick="toggleComparacao('${p.nome}')">✕</button>
+      </div>
+    </th>`).join('');
 
-                    </div>
-                    
-                    <!-- Placeholder State -->
-                    <div id="calc-placeholder" class="h-full flex items-center justify-center text-gray-400 flex-col">
-                        <div class="text-5xl mb-4">⚙️</div>
-                        <p>Configure os parâmetros ao lado para gerar o projeto.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+  const rows = specs.map(spec => {
+    const diff = isDiff(spec.key);
+    const best = getBest(spec.key);
+    const rowClass = spec.isIP ? 'best-row' : diff ? 'diff-row' : '';
+    const cells = comparacao.map(p => {
+      const val = p[spec.key];
+      const isBestVal = best !== null && val === best;
+      let cls = '';
+      if (spec.isIP) cls = 'cell-ip';
+      else if (spec.isBool) cls = val ? 'cell-yes' : 'cell-no';
+      else if (isBestVal && diff) cls = 'cell-highlight cell-best';
+      return `<td class="${cls}">${spec.format(val)}</td>`;
+    }).join('');
+    return `<tr class="${rowClass}"><td class="row-label" data-tip="${getTooltip(spec.key)}">${spec.label}</td>${cells}</tr>`;
+  }).join('');
 
-        <!-- SECTION 4: USE CASES -->
-        <section id="scenarios">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6">Cenários de Aplicação Real</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Card 1 -->
-                <div class="scenario-card bg-white rounded-lg shadow p-6 border-t-4 border-blue-500" onclick="toggleScenario('scenario-home')">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-bold text-gray-800">Residencial / Pequeno Comércio</h3>
-                        <span class="text-2xl">🏠</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-4">Instalações de baixo custo, distâncias curtas (< 50m).</p>
-                    <div id="scenario-home" class="hidden mt-4 pt-4 border-t border-gray-100">
-                        <p class="text-sm font-semibold text-green-700">Recomendação:</p>
-                        <ul class="text-sm text-gray-700 list-disc pl-4 space-y-1 mt-1">
-                            <li><strong>Cabo:</strong> UTP Cat5e (Cobre puro para alimentação).</li>
-                            <li><strong>Conexão:</strong> Balun Passivo (XBP 401/402) ou Power Balun se centralizado.</li>
-                            <li><strong>Por que?</strong> UTP é mais flexível e barato que coaxial para passar em conduítes apertados.</li>
-                        </ul>
-                    </div>
-                    <p class="text-xs text-center text-blue-500 font-bold mt-2">Clique para ver detalhes</p>
-                </div>
+  content.innerHTML = `
+    <table class="comparator-table">
+      <thead><tr>
+        <th class="row-label" style="background:var(--verde-fundo)">Especificação</th>
+        ${cols}
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:16px;font-size:11px;color:var(--cinza-texto)">
+      🟡 Linhas amarelas = diferença entre modelos &nbsp;|&nbsp; 🟢 Linhas verdes = destaque IP &nbsp;|&nbsp; ★ = Melhor valor na categoria
+    </div>`;
+}
 
-                <!-- Card 2 -->
-                <div class="scenario-card bg-white rounded-lg shadow p-6 border-t-4 border-orange-500" onclick="toggleScenario('scenario-elevator')">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-bold text-gray-800">Elevadores / Estruturas Móveis</h3>
-                        <span class="text-2xl">🛗</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-4">Ambiente com alta vibração e ruído elétrico de motores.</p>
-                    <div id="scenario-elevator" class="hidden mt-4 pt-4 border-t border-gray-100">
-                        <p class="text-sm font-semibold text-green-700">Recomendação:</p>
-                        <ul class="text-sm text-gray-700 list-disc pl-4 space-y-1 mt-1">
-                            <li><strong>Cabo:</strong> Coaxial Flexível (específico para elevador) ou UTP categoria "Elevator Travel".</li>
-                            <li><strong>Crítico:</strong> Evitar emendas no poço.</li>
-                            <li><strong>Dica:</strong> Se usar UTP, use Balun Passivo de alta qualidade com filtro de ruído ou parta para IP via Rádio/Laser para evitar cabo de manobra.</li>
-                        </ul>
-                    </div>
-                    <p class="text-xs text-center text-orange-500 font-bold mt-2">Clique para ver detalhes</p>
-                </div>
+function getTooltip(key) {
+  const tips = {
+    canaisIPAdicionais: 'Câmeras IP que podem ser adicionadas além dos canais analógicos',
+    canaisIPTotal: 'Total de câmeras IP suportadas no modo NVR puro',
+    throughput: 'Largura de banda total de entrada/saída de dados',
+    reconhecimentoFacial: 'Detecção e identificação biométrica facial',
+    linhaECercaVirtual: 'Alarme virtual por linha ou perímetro definido',
+    modoNVR: 'Quantidade máxima de câmeras IP no modo somente NVR',
+  };
+  return tips[key] || '';
+}
 
-                <!-- Card 3 -->
-                <div class="scenario-card bg-white rounded-lg shadow p-6 border-t-4 border-red-500" onclick="toggleScenario('scenario-industry')">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-bold text-gray-800">Industrial / Longa Distância</h3>
-                        <span class="text-2xl">🏭</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-4">Interferência eletromagnética (EMI) severa e distâncias > 300m.</p>
-                    <div id="scenario-industry" class="hidden mt-4 pt-4 border-t border-gray-100">
-                        <p class="text-sm font-semibold text-green-700">Recomendação:</p>
-                        <ul class="text-sm text-gray-700 list-disc pl-4 space-y-1 mt-1">
-                            <li><strong>Vídeo:</strong> Fibra Óptica (Conversor de Mídia) é mandatório acima de 400m ou perto de inversores de frequência.</li>
-                            <li><strong>Cabo UTP:</strong> Use blindado (FTP) COM aterramento correto em apenas uma ponta para evitar loop de terra.</li>
-                            <li><strong>Balun:</strong> Ativo (XBA) para corrigir atenuação severa se usar cobre.</li>
-                        </ul>
-                    </div>
-                    <p class="text-xs text-center text-red-500 font-bold mt-2">Clique para ver detalhes</p>
-                </div>
-            </div>
-        </section>
+function exportarComparacao() { window.print(); }
 
-        <!-- SECTION 5: CRITICAL KNOWLEDGE (FAQ) -->
-        <section id="faq" class="bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Análise Crítica e Perguntas Frequentes</h2>
-            <div class="space-y-4">
-                
-                <!-- Q1 -->
-                <details class="group border border-gray-200 rounded-lg bg-gray-50 open:bg-white transition">
-                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4">
-                        <span class="text-gray-800">Qual a diferença real entre Impedância Característica e Impedância de Entrada?</span>
-                        <span class="transition group-open:rotate-180">
-                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                        </span>
-                    </summary>
-                    <div class="text-gray-600 mt-0 px-4 pb-4 text-sm leading-relaxed border-t border-gray-100 pt-2">
-                        <p><strong>Impedância Característica (Z₀):</strong> É uma propriedade física do cabo (geometria + material) que define como a tensão e a corrente viajam. Num cabo coaxial RG59, é 75Ω independentemente do comprimento. É o "trilho" por onde o trem passa.</p>
-                        <p class="mt-2"><strong>Impedância de Entrada (Zin):</strong> É o que a fonte (câmera) "enxerga" ao olhar para o cabo. Se o cabo for infinito ou terminado numa carga perfeita de 75Ω, Zin = Z₀. Se houver falhas, conectores ruins ou terminação errada, Zin varia com a frequência, causando reflexões que o DVR interpreta como ruído ou fantasma.</p>
-                    </div>
-                </details>
+// ============================================================
+// MODAL DETALHES
+// ============================================================
+function verDetalhes(nome) {
+  const p = produtos.find(x => x.nome === nome);
+  if (!p) return;
 
-                <!-- Q2 -->
-                <details class="group border border-gray-200 rounded-lg bg-gray-50 open:bg-white transition">
-                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4">
-                        <span class="text-gray-800">Como o balanço de pares influencia ruído e cross-talk?</span>
-                        <span class="transition group-open:rotate-180">
-                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                        </span>
-                    </summary>
-                    <div class="text-gray-600 mt-0 px-4 pb-4 text-sm leading-relaxed border-t border-gray-100 pt-2">
-                        <p>Cabos UTP funcionam baseados em sinal diferencial. O balun envia +V num fio e -V no outro. Se um ruído externo atinge o cabo, ele deve afetar ambos os fios igualmente. O receptor subtrai os sinais [(+V + ruído) - (-V + ruído) = 2V], cancelando o ruído. Isso é o <strong>CMRR</strong> (Common Mode Rejection Ratio).</p>
-                        <p class="mt-2">Se os pares não forem perfeitamente trançados (passo de torção ruim em cabos baratos) ou se você desenrolar muito o par no conector, o ruído afeta um fio mais que o outro. O cancelamento falha, e o ruído aparece na imagem ou derruba o pacote IP.</p>
-                    </div>
-                </details>
+  const specs = [
+    ['Tipo', p.tipo],
+    ['Status', p.status],
+    ['Canais analógicos', p.canais + ' câmeras'],
+    ['Câmeras IP adicionais', p.canaisIPAdicionais + ' câmeras (total ' + p.canaisIPTotal + ' canais)'],
+    ['Modo NVR (só IP)', 'Até ' + p.modoNVR + ' câmeras'],
+    ['Resolução máxima', p.resolucaoMax],
+    ['Compressão', p.compressao],
+    ['HDs suportados', p.hdsSuportados + ' × até ' + p.capacidadeMaxHD + ' TB'],
+    ['Compatível com SSD', p.compatívelSSD ? 'Sim' : 'Não'],
+    ['Inteligência Artificial', p.inteligenciaArtificial ? 'Sim (detecção de pessoas/veículos)' : 'Não'],
+    ['Reconhecimento Facial', p.reconhecimentoFacial ? 'Sim' : 'Não'],
+    ['Linha e Cerca Virtual', p.linhaECercaVirtual ? 'Sim' : 'Não'],
+    ['Função POS', p.funcaoPOS ? 'Sim' : 'Não'],
+    ['Portas PoE', p.portesPOE > 0 ? p.portesPOE + ' portas' : 'Não'],
+    ['Portas Ethernet', p.portas + ' porta(s) RJ45 ' + p.portasVelocidade + ' Mbps'],
+    ['Throughput', p.throughput + ' Mbps'],
+    ['Tecnologias', p.tecnologias],
+  ];
 
-                <!-- Q3 -->
-                <details class="group border border-gray-200 rounded-lg bg-gray-50 open:bg-white transition">
-                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4">
-                        <span class="text-gray-800">Por que Protocolo IP + PoE exige cabos diferentes do Analógico?</span>
-                        <span class="transition group-open:rotate-180">
-                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                        </span>
-                    </summary>
-                    <div class="text-gray-600 mt-0 px-4 pb-4 text-sm leading-relaxed border-t border-gray-100 pt-2">
-                        <p>No analógico, o foco é impedância (75Ω) e frequência. A resistência DC importa menos. No PoE (Power over Ethernet), enviamos corrente elétrica (Amperes) pelo fio fino.</p>
-                        <p class="mt-2">Se usar cabo <strong>CCA (Alumínio Cobreado)</strong> em PoE: 1) A resistência do alumínio é maior, gerando queda de tensão (câmera desliga à noite quando liga o IR). 2) O cabo esquenta. 3) O alumínio oxida no conector RJ45, causando falha intermitente. <strong>Regra de Ouro:</strong> PoE exige Cobre Puro (Homologado Anatel).</p>
-                    </div>
-                </details>
+  const isInCompare = comparacao.some(c => c.nome === nome);
+  const canAdd = isInCompare || comparacao.length < 4;
 
-                <!-- Q4 -->
-                <details class="group border border-gray-200 rounded-lg bg-gray-50 open:bg-white transition">
-                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4">
-                        <span class="text-gray-800">Quando a blindagem é inútil ou prejudicial (Ground Loops)?</span>
-                        <span class="transition group-open:rotate-180">
-                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                        </span>
-                    </summary>
-                    <div class="text-gray-600 mt-0 px-4 pb-4 text-sm leading-relaxed border-t border-gray-100 pt-2">
-                        <p>Blindagem (STP/FTP) serve para drenar interferência para a terra. Se você não conectar o dreno ao terra, a blindagem vira uma antena gigante captando ruído.</p>
-                        <p class="mt-2"><strong>O Perigo do Ground Loop:</strong> Se você aterrar as DUAS pontas (na câmera e no DVR) e houver diferença de potencial entre os terras desses locais (comum em fábricas), uma corrente elétrica fluirá <strong>pela malha do cabo</strong>. Isso queima portas HDMI, cria barras horizontais na imagem e pode danificar equipamentos. <strong>Solução:</strong> Aterre a malha apenas em uma extremidade (lado do Rack/DVR).</p>
-                    </div>
-                </details>
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">${p.nome}</div>
+        <div class="modal-tipo">${p.tipo} · ${p.status}</div>
+      </div>
+      <button class="btn-close" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      ${p.canaisIPAdicionais > 0 || p.tipo === 'NVR' || p.tipo === 'iNVD' ? `
+      <div class="card-ip-expansion" style="margin-bottom:16px">
+        <span class="ip-icon">🌐</span>
+        <div>
+          <div class="ip-label">Expansão / Canais IP</div>
+          <div class="ip-value">${p.canaisIPTotal} canais IP total (modo NVR puro)</div>
+        </div>
+      </div>` : ''}
+      <table class="spec-table">
+        ${specs.map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('')}
+      </table>
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button class="btn-secondary${isInCompare ? ' added' : ''}" style="flex:1;padding:10px"
+          onclick="toggleComparacao('${nome}');fecharModal()"
+          ${!canAdd ? 'disabled' : ''}>
+          ${isInCompare ? '✓ Remover da comparação' : '+ Adicionar à comparação'}
+        </button>
+      </div>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
 
-            </div>
-        </section>
+function fecharModal(e) {
+  if (!e || e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').classList.remove('active');
+  }
+}
 
-        <!-- Footer -->
-        <footer class="mt-12 text-center text-gray-500 text-sm pb-8">
-            <p>Gerado para fins educacionais e técnicos.</p>
-            <p>As especificações podem variar conforme lotes e modelos específicos da Intelbras. Sempre consulte o datasheet oficial.</p>
-        </footer>
+// ============================================================
+// TABS
+// ============================================================
+function showTab(tab) {
+  tabAtual = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
 
-    </main>
+  document.getElementById('tab-catalogo').style.display = tab === 'catalogo' ? 'grid' : 'none';
+  document.getElementById('tab-descobrir').style.display = tab === 'descobrir' ? 'block' : 'none';
+  document.getElementById('tab-comparar').style.display = tab === 'comparar' ? 'block' : 'none';
 
-    <script>
-        // --- DATA & STATE ---
-        
-        // Cable Specs Data
-        const cableData = {
-            coax: {
-                title: "Cabo Coaxial (RG59 / RG6)",
-                desc: "O padrão tradicional de CFTV. Um condutor central cercado por dielétrico e malha.",
-                specs: [
-                    { label: "Impedância", value: "75 Ohms (Crítico para vídeo)" },
-                    { label: "Atenuação", value: "Baixa em frequências de vídeo" },
-                    { label: "Malha", value: "Recomendado min. 85% a 95% de cobre" },
-                    { label: "Uso Ideal", value: "Elevadores, locais com alta interferência (se malha for boa)" }
-                ],
-                composition: [
-                    { color: "black", width: "100%", text: "Capa PVC" },
-                    { color: "#b87333", width: "80%", text: "Malha de Cobre (Blindagem)" },
-                    { color: "white", width: "60%", text: "Dielétrico (Polietileno)" },
-                    { color: "#b87333", width: "20%", text: "Condutor Central (Sólido)" }
-                ],
-                connectors: [
-                    { name: "BNC Mola/Parafuso", desc: "Prático, mas pode oxidar. Impedância nem sempre perfeita." },
-                    { name: "BNC Compressão", desc: "Melhor opção. Vedação estanque, mantém impedância 75Ω, fixação mecânica superior." },
-                    { name: "Borne KRE", desc: "Evitar para vídeo HD. Quebra a impedância e expõe sinal a ruído." }
-                ]
-            },
-            utp: {
-                title: "Par Trançado (UTP Cat5e / Cat6)",
-                desc: "Originalmente para dados, hoje domina o CFTV pelo custo e versatilidade via Baluns.",
-                specs: [
-                    { label: "Impedância", value: "100 Ohms (Exige Balun para converter p/ 75Ω)" },
-                    { label: "Atenuação", value: "Maior que coaxial, mas corrigida por baluns ativos" },
-                    { label: "Material", value: "Cobre Puro (Obrigatório para PoE/Power Balun)" },
-                    { label: "Vantagem", value: "Leva 4 câmeras em 1 cabo ou Vídeo + Energia" }
-                ],
-                composition: [
-                    { color: "blue", width: "100%", text: "Capa Externa" },
-                    { color: "transparent", width: "80%", border: "dashed", text: "4 Pares Trançados" },
-                    { color: "#b87333", width: "15%", text: "Condutor (24 AWG)" }
-                ],
-                connectors: [
-                    { name: "RJ45 (Rede/IP)", desc: "Crimpar no padrão T568A ou B. Usar conectores de qualidade para não perder contato." },
-                    { name: "Balun Passivo (XBP)", desc: "Converte impedância e conecta diretamente no par trançado via borne ou parafuso." },
-                    { name: "Balun Power (VBP)", desc: "Conector RJ45 que leva vídeo e alimentação juntos." }
-                ]
-            },
-            alarm: {
-                title: "Cabos de Alarme (Multivias)",
-                desc: "Focados em sinal CC ou baixa frequência (sensores, sirenes).",
-                specs: [
-                    { label: "Impedância", value: "Não crítica para contatos secos" },
-                    { label: "Resistência", value: "Crítica. Cabo fino demais = queda de tensão na sirene" },
-                    { label: "Vias", value: "4 vias (2 alimentação + 2 zona) ou 2 vias" },
-                    { label: "Dica", value: "Para barramento RS-485 longo, prefira UTP" }
-                ],
-                composition: [
-                    { color: "white", width: "100%", text: "Capa PVC" },
-                    { color: "red", width: "40%", text: "Vias Coloridas (Multicores)" },
-                    { color: "silver", width: "10%", text: "Estanhado Flexível" }
-                ],
-                connectors: [
-                    { name: "Bornes de Parafuso", desc: "Padrão em centrais de alarme." },
-                    { name: "Solda + Espaguete", desc: "Melhor para emendas em sensores magnéticos." },
-                    { name: "Conectores Gel", desc: "Impermeáveis, ideais para emendas externas." }
-                ]
-            }
-        };
+  if (tab === 'comparar') renderizarComparador();
+}
 
-        // --- FUNCTIONS ---
+// ============================================================
+// CONFIGURATOR
+// ============================================================
+function initProgress() {
+  const prog = document.getElementById('configProgress');
+  prog.innerHTML = Array.from({length:totalSteps}, (_,i) =>
+    `<div class="config-dot${i < configStep ? ' done' : ''}"></div>`
+  ).join('');
+}
 
-        function navTo(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-        }
+function selectOption(el) {
+  const key = el.dataset.key;
+  const value = el.dataset.value;
+  const step = el.closest('.config-step');
 
-        // Initialize Charts
-        function initCharts() {
-            const ctx = document.getElementById('attenuationChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['0m', '100m', '200m', '300m', '400m', '500m'],
-                    datasets: [
-                        {
-                            label: 'Cabo Coaxial RG6 (Ideal)',
-                            data: [0, -2, -4, -6, -8, -10],
-                            borderColor: '#059669', // Green
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Cabo Coaxial RG59 (Padrão)',
-                            data: [0, -3, -7, -11, -15, -19],
-                            borderColor: '#10b981', // Light Green
-                            tension: 0.4
-                        },
-                        {
-                            label: 'UTP Cat5e (c/ Balun Passivo)',
-                            data: [0, -5, -12, -20, -35, -50], // Perda mais rápida sem ativo
-                            borderColor: '#3b82f6', // Blue
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Limite de Sinal Aceitável (HDCVI 720p)',
-                            data: [-25, -25, -25, -25, -25, -25],
-                            borderColor: '#ef4444', // Red
-                            borderDash: [5, 5],
-                            pointRadius: 0
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            title: { display: true, text: 'Potência do Sinal (dB)' },
-                            min: -60,
-                            max: 5
-                        },
-                        x: {
-                            title: { display: true, text: 'Distância do Cabo' }
-                        }
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': ' + context.parsed.y + ' dB';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
+  step.querySelectorAll('.config-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  configAnswers[key] = value;
 
-        // Hardware Lab Logic
-        function selectCable(type) {
-            // Update UI Tabs
-            ['coax', 'utp', 'alarm'].forEach(t => {
-                const btn = document.getElementById(`btn-${t}`);
-                if (t === type) {
-                    btn.className = "flex-1 py-4 text-center font-medium tab-active bg-gray-50 transition cursor-default";
-                } else {
-                    btn.className = "flex-1 py-4 text-center font-medium tab-inactive hover:bg-gray-100 transition cursor-pointer";
-                }
-            });
+  const stepNum = parseInt(step.dataset.step);
+  const nextBtn = document.getElementById('nextBtn' + stepNum);
+  if (nextBtn) nextBtn.disabled = false;
+}
 
-            const data = cableData[type];
-            
-            // Build Visualization (Simple CSS Layers)
-            const vizContainer = document.getElementById('cable-visual');
-            vizContainer.innerHTML = '';
-            
-            // Generate concentric circles
-            let zIndex = 10;
-            data.composition.forEach(layer => {
-                const div = document.createElement('div');
-                div.style.position = 'absolute';
-                div.style.width = layer.width;
-                div.style.height = layer.width; // Circle
-                div.style.borderRadius = '50%';
-                div.style.backgroundColor = layer.color;
-                div.style.zIndex = zIndex--;
-                div.style.display = 'flex';
-                div.style.alignItems = 'center';
-                div.style.justifyContent = 'center';
-                div.style.boxShadow = "inset 0 0 10px rgba(0,0,0,0.2)";
-                if(layer.border) div.style.border = `2px ${layer.border} #666`;
-                
-                div.className = "cable-layer shadow-sm";
-                vizContainer.appendChild(div);
-            });
+function nextStep() {
+  const curStep = document.querySelector('.config-step.active');
+  const next = curStep.nextElementSibling;
+  if (next && next.classList.contains('config-step')) {
+    curStep.classList.remove('active');
+    next.classList.add('active');
+    configStep++;
+    initProgress();
+  }
+}
 
-            // Build Legend
-            const legendHTML = data.composition.map(l => 
-                `<div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full border border-gray-300" style="background:${l.color}"></div><span>${l.text}</span></div>`
-            ).join('');
-            document.getElementById('cable-legend').innerHTML = legendHTML;
+function prevStep() {
+  const curStep = document.querySelector('.config-step.active');
+  const prev = curStep.previousElementSibling;
+  if (prev && prev.classList.contains('config-step')) {
+    curStep.classList.remove('active');
+    prev.classList.add('active');
+    configStep--;
+    initProgress();
+  }
+}
 
-            // Build Details
-            const specsHTML = `
-                <h3 class="font-bold text-xl text-gray-800">${data.title}</h3>
-                <p class="text-gray-600">${data.desc}</p>
-                <div class="grid grid-cols-2 gap-4 mt-4">
-                    ${data.specs.map(s => `
-                        <div class="border-l-2 border-green-500 pl-3">
-                            <span class="text-xs font-bold text-gray-500 uppercase">${s.label}</span>
-                            <div class="text-gray-800 font-medium">${s.value}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            document.getElementById('cable-details').innerHTML = specsHTML;
+function calcularRecomendacao() {
+  const { cameras, usaIP, ia, resolucao } = configAnswers;
+  const camNum = parseInt(cameras);
 
-            // Build Connectors
-            const connHTML = data.connectors.map(c => `
-                <div class="bg-white p-3 rounded shadow-sm border border-gray-100">
-                    <div class="font-bold text-gray-700 text-sm">${c.name}</div>
-                    <div class="text-xs text-gray-500 mt-1">${c.desc}</div>
-                </div>
-            `).join('');
-            document.getElementById('connector-list').innerHTML = connHTML;
-        }
+  let candidatos = produtos.filter(p => p.status !== 'Descontinuado');
 
-        // Calculator Logic
-        function calculateSystem() {
-            const tech = document.getElementById('calc-tech').value;
-            const res = document.getElementById('calc-res').value;
-            const cable = document.getElementById('calc-cable').value;
+  // Filter by camera count
+  candidatos = candidatos.filter(p => {
+    if (usaIP === 'todas') return p.modoNVR >= camNum;
+    return p.canais >= camNum || (usaIP !== 'nao' && p.modoNVR >= camNum);
+  });
 
-            let distance = 0;
-            let equipment = "";
-            let balunDesc = "";
-            let analysis = "";
-            let showBalunInfo = false;
+  // Filter by IP
+  if (usaIP === 'algumas') candidatos = candidatos.filter(p => p.canaisIPAdicionais > 0 || p.tipo === 'NVR' || p.tipo === 'iNVD');
+  if (usaIP === 'todas') candidatos = candidatos.filter(p => p.tipo === 'NVR' || p.tipo === 'iNVD');
 
-            // Logic Rules (Simplified based on general Intelbras Specs for HDCVI)
-            // Note: These are representative values for simulation logic
-            
-            if (tech === "IP_POE") {
-                distance = 100;
-                equipment = "Switch PoE / Injetor";
-                balunDesc = "Não usa Balun. Usa cabo UTP direto.";
-                analysis = "O limite normativo Ethernet é 100m. Acima disso, use extensores PoE ou Fibra Óptica. Se o cabo for CCA (Alumínio), reduza para max 40m ou risco de falha de energia.";
-                if(cable.includes("Coax")) {
-                    distance = 0;
-                    equipment = "Incompatível";
-                    analysis = "Não é possível usar cabo Coaxial diretamente para redes IP padrão sem conversores EoC (Ethernet over Coax).";
-                }
-            } else if (tech === "HDCVI" || tech === "AHD" || tech === "TVI") {
-                showBalunInfo = true;
-                
-                // Coaxial Logic
-                if (cable.includes("Coax")) {
-                    equipment = "Conector BNC Compressão";
-                    balunDesc = "Transmissão desbalanceada nativa.";
-                    if (res === "720p") distance = cable === "Coax_RG6" ? 500 : 300;
-                    if (res === "1080p") distance = cable === "Coax_RG6" ? 300 : 200;
-                    if (res === "4K") distance = cable === "Coax_RG6" ? 200 : 100;
-                    analysis = "O cabo coaxial oferece excelente proteção contra ruído, mas é mais caro e difícil de passar. A 4K, a atenuação em alta frequência é crítica, exigindo cabo de altíssima qualidade (RG6 min).";
-                } 
-                // UTP Logic
-                else {
-                    if (res === "720p") {
-                        distance = 350;
-                        equipment = "Balun Passivo (XBP 401/402)";
-                        analysis = "Para 720p, baluns passivos Intelbras funcionam muito bem até 350m. Acima disso, a cor começa a degradar.";
-                    } else if (res === "1080p") {
-                        distance = 250;
-                        equipment = "Balun Passivo de Vídeo (XBP 402)";
-                        analysis = "Em 1080p, a banda de frequência dobra. O alcance passivo cai para garantir nitidez. Cuidado com emendas no cabo UTP.";
-                    } else if (res === "4K") {
-                        distance = 200; // 4K em UTP é crítico
-                        equipment = "Balun 4K Específico (Passivo)";
-                        analysis = "4K em UTP é muito sensível. Exige baluns certificados para alta frequência e cabo 100% cobre. Qualquer desbalanceamento causa perda de cor ou sinal.";
-                    }
-                    balunDesc = "Necessário para casar impedância (100Ω -> 75Ω).";
-                }
-            } else { // Analog (CVBS)
-                distance = cable.includes("Coax") ? 600 : 350;
-                equipment = cable.includes("Coax") ? "BNC" : "Balun Passivo";
-                analysis = "Sinal analógico (baixa frequência) viaja longe, mas sofre muito com interferência e ruído. A imagem pode chegar, mas com chuvisco.";
-                balunDesc = cable.includes("Coax") ? "" : "Uso de balun padrão.";
-            }
+  // Filter by IA
+  if (ia === 'basica') candidatos = candidatos.filter(p => p.inteligenciaArtificial);
+  if (ia === 'avancada') candidatos = candidatos.filter(p => p.reconhecimentoFacial);
 
-            // Update DOM
-            document.getElementById('res-distance').innerText = distance > 0 ? distance + " metros" : "N/A";
-            document.getElementById('res-equipment').innerText = equipment;
-            document.getElementById('res-balun-desc').innerText = balunDesc;
-            document.getElementById('res-analysis').innerText = analysis;
+  // Filter by resolution
+  if (resolucao === '5mp') candidatos = candidatos.filter(p => ['5mp','4k','12mp'].includes(p.resolucaoNivel));
+  if (resolucao === '4k') candidatos = candidatos.filter(p => ['4k','12mp'].includes(p.resolucaoNivel));
 
-            document.getElementById('calc-placeholder').classList.add('hidden');
-            document.getElementById('calc-result').classList.remove('hidden');
+  // Score
+  const scored = candidatos.map(p => {
+    let score = 0;
+    if (p.canaisIPAdicionais > 0) score += 10;
+    if (resolucao === 'hd' && p.resolucaoNivel === 'hd') score += 5;
+    if (resolucao === '5mp' && p.resolucaoNivel === '5mp') score += 5;
+    if (resolucao === '4k' && p.resolucaoNivel === '4k') score += 5;
+    if (ia === 'avancada' && p.reconhecimentoFacial) score += 15;
+    if (ia === 'basica' && p.inteligenciaArtificial) score += 8;
+    score += Math.min(p.canaisIPTotal / 10, 5);
+    score += Math.min(p.throughput / 50, 5);
+    if (p.funcaoPOS) score += 3;
+    return { ...p, score };
+  }).sort((a,b) => b.score - a.score);
 
-            if(showBalunInfo) {
-                document.getElementById('balun-info-box').classList.remove('hidden');
-            } else {
-                document.getElementById('balun-info-box').classList.add('hidden');
-            }
-        }
+  renderizarResultados(scored.slice(0, 6), cameras, usaIP, ia, resolucao);
+}
 
-        function toggleScenario(id) {
-            const el = document.getElementById(id);
-            if (el.classList.contains('hidden')) {
-                el.classList.remove('hidden');
-            } else {
-                el.classList.add('hidden');
-            }
-        }
+function renderizarResultados(lista, cameras, usaIP, ia, resolucao) {
+  document.querySelectorAll('.config-step').forEach(s => s.classList.remove('active'));
+  const results = document.getElementById('configResults');
+  results.classList.add('active');
 
-        // --- INIT ---
-        window.addEventListener('load', () => {
-            initCharts();
-            selectCable('coax'); // Default selection
-        });
+  const iaText = { nao:'sem IA', basica:'com IA básica', avancada:'com IA avançada' };
+  const ipText = { nao:'câmeras analógicas', algumas:'câmeras híbridas', todas:'câmeras IP' };
+  document.getElementById('resultDesc').textContent =
+    `${cameras} câmeras, ${ipText[usaIP]}, ${iaText[ia]}, resolução ${resolucao.toUpperCase()}`;
 
-    </script>
+  if (!lista.length) {
+    document.getElementById('resultCards').innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon">😕</div>
+      <div class="empty-title">Nenhum modelo encontrado</div>
+      <div class="empty-desc">Tente ajustar suas necessidades</div>
+    </div>`;
+    return;
+  }
+
+  document.getElementById('resultCards').innerHTML = lista.map((p, i) => {
+    let ribbon, ribbonClass, reason;
+    if (i === 0) {
+      ribbon = '⭐ Melhor opção';
+      ribbonClass = 'best';
+      reason = `Melhor combinação de recursos para suas necessidades: ${p.canaisIPTotal > p.canais ? 'expansão IP, ' : ''}${p.inteligenciaArtificial ? 'IA integrada, ' : ''}throughput de ${p.throughput}Mbps.`;
+    } else if (i === 1) {
+      ribbon = '💰 Melhor custo-benefício';
+      ribbonClass = 'cost';
+      reason = `Boa relação recursos/preço com ${p.canais}ch e ${p.resolucaoMax}.`;
+    } else {
+      ribbon = `🔄 Alternativa ${i - 1}`;
+      ribbonClass = 'alt';
+      reason = `Opção válida com ${p.canaisIPTotal} canais IP e ${p.resolucaoMax}.`;
+    }
+
+    const isInCompare = comparacao.some(c => c.nome === p.nome);
+
+    return `<div class="result-card ${ribbonClass}">
+      <div class="result-ribbon ${ribbonClass}">${ribbon}</div>
+      <div class="card-header" style="cursor:pointer" onclick="verDetalhes('${p.nome}')">
+        <div class="card-img-wrap">${getDeviceIcon(p.tipo, p.canais)}</div>
+        <div class="card-title-area">
+          <div class="card-model">${p.nome}</div>
+          <div class="card-tipo">${p.tipo} · ${p.canais}ch</div>
+        </div>
+      </div>
+      <div class="reason-box">${reason}</div>
+      <div class="card-body">
+        <div class="card-stat"><div class="card-stat-label">IP Total</div><div class="card-stat-value cell-ip">${p.canaisIPTotal}ch</div></div>
+        <div class="card-stat"><div class="card-stat-label">Resolução</div><div class="card-stat-value" style="font-size:11px">${p.resolucaoMax}</div></div>
+        <div class="card-stat"><div class="card-stat-label">IA</div><div class="card-stat-value">${p.reconhecimentoFacial ? '🧠 Completa' : p.inteligenciaArtificial ? '🤖 Básica' : '—'}</div></div>
+        <div class="card-stat"><div class="card-stat-label">HDs</div><div class="card-stat-value">${p.hdsSuportados} × ${p.capacidadeMaxHD}TB</div></div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-secondary${isInCompare ? ' added' : ''}" onclick="toggleComparacao('${p.nome}')">
+          ${isInCompare ? '✓ Comparando' : '+ Comparar'}
+        </button>
+        <button class="btn-primary" onclick="verDetalhes('${p.nome}')">Detalhes</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function reiniciarConfigurador() {
+  configStep = 1;
+  configAnswers = {};
+  document.getElementById('configResults').classList.remove('active');
+  document.querySelectorAll('.config-step').forEach((s,i) => {
+    s.classList.toggle('active', i === 0);
+    s.querySelectorAll('.config-option').forEach(o => o.classList.remove('selected'));
+    const nb = s.querySelector('[id^="nextBtn"]');
+    if (nb) nb.disabled = true;
+  });
+  initProgress();
+}
+
+// ============================================================
+// THEME
+// ============================================================
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.getAttribute('data-theme') === 'light';
+  html.setAttribute('data-theme', isLight ? '' : 'light');
+  document.getElementById('toggleTheme').textContent = isLight ? '🌙' : '☀️';
+}
+
+// ============================================================
+// INIT
+// ============================================================
+aplicarFiltros();
+initProgress();
+</script>
 </body>
 </html>
