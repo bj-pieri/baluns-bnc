@@ -475,21 +475,48 @@ body {
   color: var(--text-main);
 }
 
+/* FINTECH / SHADCN HIGHLIGHT STAT (Vercel inspired) */
 .highlight-stat {
   grid-column: 1 / -1;
-  background: var(--highlight-melhor);
-  border-left: 3px solid var(--primary);
-  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 12px 14px;
   border-radius: var(--radius-sm);
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-sm);
 }
-.highlight-stat .card-stat-label {
-  color: var(--primary);
-  font-weight: 600;
+.highlight-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  flex-shrink: 0;
 }
-.highlight-stat .card-stat-value {
+.highlight-stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.highlight-stat-content .card-stat-label {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.highlight-stat-content .card-stat-value {
+  color: var(--text-main);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .card-ip-expansion {
@@ -641,9 +668,22 @@ body {
 .comparator-table .diff-row td:not(.row-label) { background: var(--highlight-diff); }
 .comparator-table .best-row td:not(.row-label) { background: var(--highlight-melhor); }
 
-.comparator-table .highlight-row td { background: var(--highlight-melhor); border-top: 1px solid var(--primary); border-bottom: 1px solid var(--primary); }
-.comparator-table .highlight-row .row-label { color: var(--primary); font-weight: 600; border-top: 1px solid var(--primary); border-bottom: 1px solid var(--primary); }
-.comparator-table .highlight-row td:not(.row-label) { color: var(--primary); font-weight: 600; }
+.comparator-table .highlight-row td { 
+  background: var(--secondary); 
+  border-top: 1px solid var(--border); 
+  border-bottom: 1px solid var(--border); 
+}
+.comparator-table .highlight-row .row-label { 
+  color: var(--text-main); 
+  font-weight: 600; 
+  background: var(--secondary);
+  border-top: 1px solid var(--border); 
+  border-bottom: 1px solid var(--border); 
+}
+.comparator-table .highlight-row td:not(.row-label) { 
+  color: var(--text-main); 
+  font-weight: 600; 
+}
 
 .compare-col-header { min-width: 220px; }
 
@@ -1389,10 +1429,27 @@ function renderizarProdutos(lista) {
         </div>
       </div>
       <div class="card-body">
-        <div class="card-stat highlight-stat">
-          <div class="card-stat-label">Qualidade de Gravação / Visualização</div>
-          <div class="card-stat-value">${p.resolucaoMax}</div>
+        
+        <div class="highlight-stat">
+          <div class="highlight-stat-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+          </div>
+          <div class="highlight-stat-content">
+            <div class="card-stat-label">Gravação / Visualização</div>
+            <div class="card-stat-value">${p.resolucaoMax}</div>
+          </div>
         </div>
+
+        ${(p.tipo === 'NVR' || p.tipo === 'iNVD') ? `
+        <div class="card-stat">
+          <div class="card-stat-label">Canais Suportados</div>
+          <div class="card-stat-value">${p.canais} canais (IP)</div>
+        </div>
+        <div class="card-stat">
+          <div class="card-stat-label">Modo de Operação</div>
+          <div class="card-stat-value">Apenas IP</div>
+        </div>
+        ` : `
         <div class="card-stat">
           <div class="card-stat-label">Canais Analógicos</div>
           <div class="card-stat-value">${p.canais} canais</div>
@@ -1401,10 +1458,11 @@ function renderizarProdutos(lista) {
           <div class="card-stat-label">Modo NVR</div>
           <div class="card-stat-value">${p.modoNVR > 0 ? p.modoNVR + ' IP' : '—'}</div>
         </div>
-        ${p.canaisIPAdicionais > 0 || p.tipo === 'NVR' || p.tipo === 'iNVD' ? `
+        `}
+        ${(p.canaisIPAdicionais > 0 && p.tipo !== 'NVR' && p.tipo !== 'iNVD') ? `
         <div class="card-ip-expansion">
           <div>
-            <div class="ip-label">${(p.tipo === 'NVR' || p.tipo === 'iNVD') ? 'Canais IP' : 'Expansão IP'}</div>
+            <div class="ip-label">Expansão IP</div>
             <div class="ip-value">${p.canaisIPTotal} canais IP total</div>
           </div>
         </div>` : ''}
@@ -1572,10 +1630,10 @@ function renderizarComparador() {
 
   const specs = [
     { key:'tipo', label:'Tipo', format: v => v },
-    { key:'canais', label:'Canais Analógicos', format: v => v + ' canais' },
-    { key:'canaisIPAdicionais', label:'Câmeras IP Adicionais', format: v => v > 0 ? v + ' câmeras' : '—', isIP:true },
-    { key:'canaisIPTotal', label:'Total IP (modo NVR)', format: v => v + ' câmeras', isIP:true },
-    { key:'modoNVR', label:'Modo NVR (só IP)', format: v => 'até ' + v + ' câmeras' },
+    { key:'canais', label:'Canais (Base)', format: (v, p) => (p.tipo === 'NVR' || p.tipo === 'iNVD') ? v + ' (IP)' : v + ' (Analógicos)' },
+    { key:'canaisIPAdicionais', label:'Câmeras IP Adicionais', format: (v, p) => (p.tipo === 'NVR' || p.tipo === 'iNVD') ? '—' : (v > 0 ? v + ' câmeras' : '—'), isIP:true },
+    { key:'canaisIPTotal', label:'Total IP (modo NVR/Puro)', format: v => v + ' câmeras', isIP:true },
+    { key:'modoNVR', label:'Modo NVR (só IP)', format: (v, p) => (p.tipo === 'NVR' || p.tipo === 'iNVD') ? 'Nativo' : 'até ' + v + ' câmeras' },
     { key:'resolucaoMax', label:'Qualidade Leitura/Gravação', format: v => v, isHighlight:true },
     { key:'inteligenciaArtificial', label:'Inteligência Artificial', format: v => v ? 'Sim' : 'Não', isBool:true },
     { key:'reconhecimentoFacial', label:'Reconhecimento Facial', format: v => v ? 'Sim' : 'Não', isBool:true },
@@ -1625,7 +1683,7 @@ function renderizarComparador() {
       if (spec.isIP) cls = 'cell-ip';
       else if (spec.isBool) cls = val ? 'cell-yes' : 'cell-no';
       else if (isBestVal && diff) cls = 'cell-highlight cell-best';
-      return `<td class="${cls}">${spec.format(val)}</td>`;
+      return `<td class="${cls}">${spec.format(val, p)}</td>`;
     }).join('');
     return `<tr class="${rowClass}"><td class="row-label" data-tip="${getTooltip(spec.key)}">${spec.label}</td>${cells}</tr>`;
   }).join('');
@@ -1666,10 +1724,23 @@ function verDetalhes(nome) {
 
   const specs = [
     ['Tipo', p.tipo],
-    ['Status', p.status],
-    ['Canais analógicos', p.canais + ' canais'],
-    ['Câmeras IP adicionais', p.canaisIPAdicionais + ' câmeras (total ' + p.canaisIPTotal + ' canais)'],
-    ['Modo NVR (só IP)', 'Até ' + p.modoNVR + ' câmeras'],
+    ['Status', p.status]
+  ];
+
+  if (p.tipo === 'NVR' || p.tipo === 'iNVD') {
+    specs.push(
+      ['Canais Suportados', p.canais + ' canais (IP)'],
+      ['Modo de Operação', 'Apenas IP']
+    );
+  } else {
+    specs.push(
+      ['Canais Analógicos', p.canais + ' canais'],
+      ['Câmeras IP Adicionais', p.canaisIPAdicionais + ' câmeras (total ' + p.canaisIPTotal + ' canais)'],
+      ['Modo NVR (só IP)', 'Até ' + p.modoNVR + ' câmeras']
+    );
+  }
+
+  specs.push(
     ['Armazenamento', p.armazenamentoFull],
     ['Qualidade Leitura/Gravação', p.resolucaoMax],
     ['Compatível com SSD', p.compatívelSSD ? 'Sim' : 'Não'],
@@ -1680,8 +1751,8 @@ function verDetalhes(nome) {
     ['Função POS', p.funcaoPOS ? 'Sim' : 'Não'],
     ['Portas PoE', p.poeDetalhe],
     ['Portas Ethernet', p.portasDetalhe],
-    ['Throughput (Rede)', p.throughputDetalhe],
-  ];
+    ['Throughput (Rede)', p.throughputDetalhe]
+  );
 
   const isInCompare = comparacao.some(c => c.nome === nome);
   const canAdd = isInCompare || comparacao.length < 4;
@@ -1695,7 +1766,7 @@ function verDetalhes(nome) {
       <button class="btn-close" onclick="fecharModal()">✕</button>
     </div>
     <div class="modal-body">
-      ${p.canaisIPAdicionais > 0 || p.tipo === 'NVR' || p.tipo === 'iNVD' ? `
+      ${(p.canaisIPAdicionais > 0 && p.tipo !== 'NVR' && p.tipo !== 'iNVD') ? `
       <div class="card-ip-expansion" style="margin-bottom:20px; border-color:var(--border)">
         <div>
           <div class="ip-label">Expansão / Canais IP</div>
@@ -1705,7 +1776,19 @@ function verDetalhes(nome) {
       <table class="spec-table">
         ${specs.map(([l,v]) => {
           if (l === 'Qualidade Leitura/Gravação') {
-            return `<tr style="background:var(--highlight-melhor)"><td style="color:var(--primary); font-weight:600">${l}</td><td style="color:var(--primary); font-weight:700">${v}</td></tr>`;
+            return `<tr>
+              <td colspan="2" style="padding: 16px 0;">
+                <div class="highlight-stat" style="margin: 0; background: var(--bg);">
+                  <div class="highlight-stat-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+                  </div>
+                  <div class="highlight-stat-content">
+                    <div class="card-stat-label">${l}</div>
+                    <div class="card-stat-value">${v}</div>
+                  </div>
+                </div>
+              </td>
+            </tr>`;
           }
           return `<tr><td>${l}</td><td>${v}</td></tr>`;
         }).join('')}
@@ -1872,10 +1955,17 @@ function renderizarResultados(lista, cameras, usaIP, ia, resolucao) {
       </div>
       <div class="reason-box">${reason}</div>
       <div class="card-body">
-        <div class="card-stat highlight-stat" style="margin-bottom:12px; grid-column:1/-1;">
-          <div class="card-stat-label">Gravação / Visualização</div>
-          <div class="card-stat-value" style="font-size:12px">${p.resolucaoMax}</div>
+        
+        <div class="highlight-stat">
+          <div class="highlight-stat-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+          </div>
+          <div class="highlight-stat-content">
+            <div class="card-stat-label">Gravação / Visualização</div>
+            <div class="card-stat-value">${p.resolucaoMax}</div>
+          </div>
         </div>
+
         <div class="card-stat"><div class="card-stat-label">IP Total</div><div class="card-stat-value cell-ip">${p.canaisIPTotal} canais</div></div>
         <div class="card-stat"><div class="card-stat-label">HDs</div><div class="card-stat-value">${p.hdsSuportados} × ${p.capacidadeMaxHD}TB</div></div>
         <div class="card-stat" style="grid-column: 1 / -1;"><div class="card-stat-label">IA</div><div class="card-stat-value">${p.reconhecimentoFacial ? 'Completa' : p.inteligenciaArtificial ? 'Básica' : '—'}</div></div>
